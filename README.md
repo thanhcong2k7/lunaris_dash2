@@ -1,3 +1,3 @@
-# Creative Tim Builder
+# Lunaris Media Group Dashboard
 
-With Creative Tim Builder, you can build your next template easily using drag and drop.
+Lunaris Dashboard, based on Soft UI (creative-tim)
