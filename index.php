@@ -1,8 +1,8 @@
 <?php
 	session_start();
-	//if (!isset($_SESSION["userwtf"])){
-	//	header("Location: ./home/");
-	//}
+	if (!isset($_SESSION["userwtf"])){
+		header("Location: ./home/");
+	}
 	$_SESSION["userwtf"]=1;
 	$conn = mysqli_connect("localhost", "root", "", "lunaris_real");
 	$res = $conn->query("SELECT * FROM user WHERE userID=".$_SESSION["userwtf"].";");
@@ -15,8 +15,10 @@
 	$albumname=array();
 	$artist_alb=array();
 	$reldate=array();
+	$albumID=array();
 	$a=0;
 	while($row=$res->fetch_assoc()){
+		$albumID[]=$row["albumID"];
 		$albumname[]=$row["albumName"];
 		$upc[]=$row["UPCNum"];
 		$artist_alb[]=$row["authorID"];
@@ -38,7 +40,6 @@
 		$artistid[]=$row["authorID"];
 		$artist[]=$row["authorName"];
 		$artistCnt++;
-		echo '<script>alert("oac '.$row["authorName"].'");</script>';
 	}
 ?>
 <head>
@@ -319,10 +320,29 @@
                             <div class="row">
                                 <div class="col-8">
                                     <div class="numbers">
-                                        <p class="text-sm mb-0 text-capitalize font-weight-bold">Today's Money</p>
+                                        <p class="text-sm mb-0 font-weight-bold">Today is <span id="codepro-date"></span></p>
                                         <h5 class="font-weight-bolder mb-0">
-                                            $53,000
-                                            <span class="text-success text-sm font-weight-bolder">+55%</span>
+											Time is <span id="codepro-hour" class="text-m"></span>
+											<script type="text/javascript">
+												var myVar = setInterval(function() {
+													myTimer()
+												}, 1000);
+												function myTimer() {
+													var d = new Date();
+													var t = d.toLocaleTimeString();
+													document.getElementById("codepro-hour").innerHTML = t;
+												}
+												n = new Date();
+												if (n.getTimezoneOffset() == 0) t = n.getTime() + (7 * 60 * 60 * 1000);
+												else t = n.getTime();
+												n.setTime(t);
+												var dn = new Array("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
+												d = n.getDay();
+												m = n.getMonth() + 1;
+												y = n.getFullYear()
+												var date = dn[d] + ", " + (n.getDate() < 10 ? "0" : "") + n.getDate() + "/" + (m < 10 ? "0" : "") + m + "/" + y;
+												document.getElementById("codepro-date").innerHTML = date;
+											</script>
                                         </h5>
                                     </div>
                                 </div>
@@ -341,7 +361,7 @@
                             <div class="row">
                                 <div class="col-8">
                                     <div class="numbers">
-                                        <p class="text-sm mb-0 text-capitalize font-weight-bold">Today's Users</p>
+                                        <p class="text-sm mb-0 text-capitalize font-weight-bold">Today's Streams</p>
                                         <h5 class="font-weight-bolder mb-0">
                                             2,300
                                             <span class="text-success text-sm font-weight-bolder">+3%</span>
@@ -363,9 +383,9 @@
                             <div class="row">
                                 <div class="col-8">
                                     <div class="numbers">
-                                        <p class="text-sm mb-0 text-capitalize font-weight-bold">New Clients</p>
+                                        <p class="text-sm mb-0 text-capitalize font-weight-bold">Today's Income</p>
                                         <h5 class="font-weight-bolder mb-0">
-                                            +3,462
+                                            $12,4
                                             <span class="text-danger text-sm font-weight-bolder">-2%</span>
                                         </h5>
                                     </div>
@@ -380,26 +400,27 @@
                     </div>
                 </div>
                 <div class="col-xl-3 col-sm-6">
-                    <div class="card mb-4">
-                        <div class="card-body p-3">
-                            <div class="row">
-                                <div class="col-8">
-                                    <div class="numbers">
-                                        <p class="text-sm mb-0 text-capitalize font-weight-bold">Sales</p>
-                                        <h5 class="font-weight-bolder mb-0">
-                                            $103,430
-                                            <span class="text-success text-sm font-weight-bolder">+5%</span>
-                                        </h5>
-                                    </div>
-                                </div>
-                                <div class="col-4 text-end">
-                                    <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                                        <i class="ni ni-cart text-lg opacity-10" aria-hidden="true"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+					<a href="./logout.php">
+						<div class="card mb-4">
+							<div class="card-body p-3">
+								<div class="row">
+									<div class="col-8">
+										<div class="numbers">
+											<p class="text-sm mb-0 font-weight-bold">Wanna use another account?</p>
+											<h5 class="font-weight-bolder mb-0 text-danger">
+												Logout
+											</h5>
+										</div>
+									</div>
+									<div class="col-4 text-end">
+										<div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+											<i class="ni ni-cart text-lg opacity-10" aria-hidden="true"></i>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</a>
                 </div>
             </div>
             <div class="row removable mb-4">
@@ -412,7 +433,7 @@
                         <div class="card-body p-3">
                             <div class="row">
 							<?php
-								$lnk='https://gcdnb.pbrd.co/images/div2bRJ1o32G.jpg';
+								//$lnk='https://gcdnb.pbrd.co/images/div2bRJ1o32G.jpg';
 								$artist_str="";
 								if (count($albumname)>3){
 									$cnt=2;
@@ -423,13 +444,13 @@
 								for($i=0; $i<$a; $i++){
 									//Process json string
 									$artist_str="";
-									echo '<script>alert("oac '.$artist_alb[$i].'");</script>';
 									$tmp_arr = json_decode($artist_alb[$i]);
 									foreach($tmp_arr as &$artist_tmp)
 										for($j=0; $j<count($artistid); $j++){
 											if ($artistid[$j]==$artist_tmp)
 												$artist_str .= strval($artist[$artist_tmp-1])." ";
 										}
+									$lnk="./userRes/artwork/".strval($albumID[$i]).".jpg";
 									echo '<div class="col-xl-3 col-md-6 mb-4">
 										<div class="card card-blog card-plain">
 											<div class="position-relative">

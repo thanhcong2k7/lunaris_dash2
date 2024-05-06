@@ -1,14 +1,53 @@
+<?php
+	session_start();
+	if (!isset($_SESSION["userwtf"])){
+		header("Location: ./home/");
+	}
+	$_SESSION["userwtf"]=1;
+	$conn = mysqli_connect("localhost", "root", "", "lunaris_real");
+	$res = $conn->query("SELECT * FROM user WHERE userID=".$_SESSION["userwtf"].";");
+	while($row=$res->fetch_assoc()){
+		$_SESSION["name"]=$row["name"];
+		$_SESSION["labelName"]=$row["labelName"];
+	}
+	$res = $conn->query("SELECT * FROM album WHERE userID=".$_SESSION["userwtf"].";");
+	$upc=array();
+	$albumname=array();
+	$artist_alb=array();
+	$reldate=array();
+	$albumID=array();
+	$a=0;
+	while($row=$res->fetch_assoc()){
+		$albumID[]=$row["albumID"];
+		$albumname[]=$row["albumName"];
+		$upc[]=$row["UPCNum"];
+		$artist_alb[]=$row["authorID"];
+		$reldate[]=$row["relDate"];
+		$a++;
+	}
+	$artist=array();
+	$artistid=array();
+	$res = $conn->query("SELECT * FROM author WHERE userID=".$_SESSION["userwtf"].";");
+	$artistCnt=0;
+	while($row=$res->fetch_assoc()){
+		$artistid[]=$row["authorID"];
+		$artist[]=$row["authorName"];
+		$artistCnt++;
+	}
+?>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Dashboard Builder</title>
+    <title>Lunaris Media Group</title>
+	<link rel="apple-touch-icon" sizes="76x76" href="./assets/img/favicon.png">
+	<link rel="icon" type="image/png" href="./assets/img/favicon.png">
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://demos.creative-tim.com/soft-ui-dashboard/assets/css/nucleo-icons.css">
     <link rel="stylesheet" href="https://demos.creative-tim.com/soft-ui-dashboard/assets/css/nucleo-svg.css">
     <link rel="stylesheet" href="https://demos.creative-tim.com/soft-ui-dashboard/assets/css/soft-ui-dashboard.min.css?v=1.0.2">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
-    <link rel="stylesheet" href="../assets/css/theme.css">
-    <link rel="stylesheet" href="../assets/css/loopple/loopple.css">
+    <link rel="stylesheet" href="./assets/css/theme.css">
+    <link rel="stylesheet" href="./assets/css/loopple/loopple.css">
 </head>
 
 <body class="g-sidenav-show">
@@ -24,7 +63,7 @@
         <div class="collapse navbar-collapse  w-auto" id="sidenav-collapse-main">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="../index.html">
+                    <a class="nav-link" href="index.php">
                         <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg width="12px" height="12px" viewBox="0 0 45 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <title>shop </title>
@@ -172,21 +211,6 @@
                 </li>
             </ul>
         </div>
-        <div class="sidenav-footer mx-3 mt-3 pt-3">
-            <div class="card card-background shadow-none card-background-mask-secondary" id="sidenavCard">
-                <div class="full-background" style="background-image: url(https://demos.creative-tim.com/soft-ui-dashboard/assets/img/curved-images/white-curved.jpeg)"></div>
-                <div class="card-body text-left p-3 w-100">
-                    <div class="icon icon-shape icon-sm bg-white shadow text-center mb-3 d-flex align-items-center justify-content-center border-radius-md">
-                        <i class="ni ni-diamond text-dark text-gradient text-lg top-0" aria-hidden="true" id="sidenavCardIcon"></i>
-                    </div>
-                    <div class="docs-info">
-                        <h6 class="text-white up mb-0">Need help?</h6>
-                        <p class="text-xs font-weight-bold">Please check our docs</p>
-                        <a href="javascript:;" target="_blank" class="btn btn-white btn-sm w-100 mb-0">Documentation</a>
-                    </div>
-                </div>
-            </div>
-        </div>
     </nav>
     <div class="main-content" id="panel">
         <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 mt-3 shadow-none border-radius-xl" id="navbarTop" data-navbar="true" data-navbar-value="49">
@@ -313,7 +337,7 @@
                                     <h6>Your releases</h6>
                                     <p class="text-sm mb-0">
                                         <i class="fa fa-check text-info" aria-hidden="true"></i>
-                                        <span class="font-weight-bold ms-1">All of your releases are here, including unfinished things.</span> this month
+                                        <span class="font-weight-bold ms-1">All of your releases are here, including unfinished things.</span>
                                     </p>
                                 </div>
                                 <div class="col-lg-6 col-5 my-auto text-end">
@@ -342,237 +366,56 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div>
-                                                        <img src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/small-logos/logo-xd.svg" class="avatar avatar-sm me-3">
-                                                    </div>
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">Soft UI XD Version</h6>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="avatar-group mt-2">
-                                                    <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Ryan Tompson" data-original-title="">
-                                                        <img alt="Image placeholder" src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/team-1.jpg">
-                                                    </a>
-                                                    <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Romina Hadid" data-original-title="">
-                                                        <img alt="Image placeholder" src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/team-2.jpg">
-                                                    </a>
-                                                    <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Alexander Smith" data-original-title="">
-                                                        <img alt="Image placeholder" src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/team-3.jpg">
-                                                    </a>
-                                                    <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Jessica Doe" data-original-title="">
-                                                        <img alt="Image placeholder" src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/team-4.jpg">
-                                                    </a>
-                                                </div>
-                                            </td>
-                                            <td class="align-middle text-center text-sm">
-                                                <span class="text-xs font-weight-bold"> $14,000 </span>
-                                            </td>
-                                            <td class="align-middle">
-                                                <div class="progress-wrapper w-75 mx-auto">
-                                                    <div class="progress-info">
-                                                        <div class="progress-percentage">
-                                                            <span class="text-xs font-weight-bold">60%</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="progress">
-                                                        <div class="progress-bar bg-gradient-info w-60" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div>
-                                                        <img src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/small-logos/logo-atlassian.svg" class="avatar avatar-sm me-3">
-                                                    </div>
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">Add Progress Track</h6>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="avatar-group mt-2">
-                                                    <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Romina Hadid" data-original-title="">
-                                                        <img alt="Image placeholder" src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/team-2.jpg">
-                                                    </a>
-                                                    <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Jessica Doe" data-original-title="">
-                                                        <img alt="Image placeholder" src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/team-4.jpg">
-                                                    </a>
-                                                </div>
-                                            </td>
-                                            <td class="align-middle text-center text-sm">
-                                                <span class="text-xs font-weight-bold"> $3,000 </span>
-                                            </td>
-                                            <td class="align-middle">
-                                                <div class="progress-wrapper w-75 mx-auto">
-                                                    <div class="progress-info">
-                                                        <div class="progress-percentage">
-                                                            <span class="text-xs font-weight-bold">10%</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="progress">
-                                                        <div class="progress-bar bg-gradient-info w-10" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div>
-                                                        <img src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/small-logos/logo-slack.svg" class="avatar avatar-sm me-3">
-                                                    </div>
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">Fix Platform Errors</h6>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="avatar-group mt-2">
-                                                    <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Romina Hadid" data-original-title="">
-                                                        <img alt="Image placeholder" src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/team-3.jpg">
-                                                    </a>
-                                                    <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Jessica Doe" data-original-title="">
-                                                        <img alt="Image placeholder" src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/team-1.jpg">
-                                                    </a>
-                                                </div>
-                                            </td>
-                                            <td class="align-middle text-center text-sm">
-                                                <span class="text-xs font-weight-bold"> Not set </span>
-                                            </td>
-                                            <td class="align-middle">
-                                                <div class="progress-wrapper w-75 mx-auto">
-                                                    <div class="progress-info">
-                                                        <div class="progress-percentage">
-                                                            <span class="text-xs font-weight-bold">100%</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="progress">
-                                                        <div class="progress-bar bg-gradient-success w-100" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div>
-                                                        <img src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm me-3">
-                                                    </div>
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">Launch our Mobile App</h6>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="avatar-group mt-2">
-                                                    <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Ryan Tompson" data-original-title="">
-                                                        <img alt="Image placeholder" src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/team-4.jpg">
-                                                    </a>
-                                                    <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Romina Hadid" data-original-title="">
-                                                        <img alt="Image placeholder" src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/team-3.jpg">
-                                                    </a>
-                                                    <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Alexander Smith" data-original-title="">
-                                                        <img alt="Image placeholder" src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/team-4.jpg">
-                                                    </a>
-                                                    <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Jessica Doe" data-original-title="">
-                                                        <img alt="Image placeholder" src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/team-1.jpg">
-                                                    </a>
-                                                </div>
-                                            </td>
-                                            <td class="align-middle text-center text-sm">
-                                                <span class="text-xs font-weight-bold"> $20,500 </span>
-                                            </td>
-                                            <td class="align-middle">
-                                                <div class="progress-wrapper w-75 mx-auto">
-                                                    <div class="progress-info">
-                                                        <div class="progress-percentage">
-                                                            <span class="text-xs font-weight-bold">100%</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="progress">
-                                                        <div class="progress-bar bg-gradient-success w-100" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div>
-                                                        <img src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/small-logos/logo-jira.svg" class="avatar avatar-sm me-3">
-                                                    </div>
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">Add the New Pricing Page</h6>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="avatar-group mt-2">
-                                                    <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Ryan Tompson" data-original-title="">
-                                                        <img alt="Image placeholder" src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/team-4.jpg">
-                                                    </a>
-                                                </div>
-                                            </td>
-                                            <td class="align-middle text-center text-sm">
-                                                <span class="text-xs font-weight-bold"> $500 </span>
-                                            </td>
-                                            <td class="align-middle">
-                                                <div class="progress-wrapper w-75 mx-auto">
-                                                    <div class="progress-info">
-                                                        <div class="progress-percentage">
-                                                            <span class="text-xs font-weight-bold">25%</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="progress">
-                                                        <div class="progress-bar bg-gradient-info w-25" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="25"></div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div>
-                                                        <img src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/small-logos/logo-invision.svg" class="avatar avatar-sm me-3">
-                                                    </div>
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">Redesign New Online Shop</h6>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="avatar-group mt-2">
-                                                    <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Ryan Tompson" data-original-title="">
-                                                        <img alt="Image placeholder" src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/team-1.jpg">
-                                                    </a>
-                                                    <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Jessica Doe" data-original-title="">
-                                                        <img alt="Image placeholder" src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/team-4.jpg">
-                                                    </a>
-                                                </div>
-                                            </td>
-                                            <td class="align-middle text-center text-sm">
-                                                <span class="text-xs font-weight-bold"> $2,000 </span>
-                                            </td>
-                                            <td class="align-middle">
-                                                <div class="progress-wrapper w-75 mx-auto">
-                                                    <div class="progress-info">
-                                                        <div class="progress-percentage">
-                                                            <span class="text-xs font-weight-bold">40%</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="progress">
-                                                        <div class="progress-bar bg-gradient-info w-40" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="40"></div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
+									<?php
+										$artist_str="";
+										if (count($albumname)>3){
+											$cnt=2;
+											echo "vcl";
+										} else if (count($albumname)==0){
+											echo "";
+										} else
+										for($i=0; $i<$a; $i++){
+											//Process json string
+											$artist_str="";
+											$tmp_arr = json_decode($artist_alb[$i]);
+											foreach($tmp_arr as &$artist_tmp)
+												for($j=0; $j<count($artistid); $j++){
+													if ($artistid[$j]==$artist_tmp)
+														$artist_str .= strval($artist[$artist_tmp-1])." ";
+												}
+											$lnk="./userRes/artwork/".strval($albumID[$i]).".jpg";
+											echo'<tr>
+													<td>
+														<div class="d-flex px-2 py-1">
+															<div>
+																<img src="'.$lnk.'" class="avatar avatar-sm me-3">
+															</div>
+															<div class="d-flex flex-column justify-content-center">
+																<h6 class="mb-0 text-sm">'.$albumname[$i].'</h6>
+															</div>
+														</div>
+													</td>
+													<td>
+														cho nay la upc
+													</td>
+													<td class="align-middle text-center text-sm">
+														<span class="text-xs font-weight-bold"> $2,000 </span>
+													</td>
+													<td class="align-middle">
+														<div class="progress-wrapper w-75 mx-auto">
+															<div class="progress-info">
+																<div class="progress-percentage">
+																	<span class="text-xs font-weight-bold">40%</span>
+																</div>
+															</div>
+															<div class="progress">
+																<div class="progress-bar bg-gradient-info w-40" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="40"></div>
+															</div>
+														</div>
+													</td>
+												</tr>';
+											}
+										?>
                                     </tbody>
                                 </table>
                             </div>
@@ -615,7 +458,6 @@
             </div>
         </footer>
     </div>
-    <div class="loopple-alert loopple-alert-gradient-dark loopple-alert-dismissible loopple-fade loopple-position-fixed loopple-z-index-9999 loopple-bottom-2 loopple-mx-auto loopple-text-center loopple-right-0 loopple-left-0 loopple-w-50" role="alert"><strong>View and edit your project online</strong><a class="loopple-btn loopple-btn-white loopple-ml-2" href="https://builder.creative-tim.com/builder/project-0ZOLHYDArTL0RamDwlGiycwKKw9CHvE7SGg" target="_blank">Editor</a><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button></div>
     <script src="https://demos.creative-tim.com/soft-ui-dashboard/assets/js/core/popper.min.js"></script>
     <script src="https://demos.creative-tim.com/soft-ui-dashboard/assets/js/core/bootstrap.min.js"></script>
     <script src="https://demos.creative-tim.com/soft-ui-dashboard/assets/js/plugins/chartjs.min.js"></script>
