@@ -479,7 +479,7 @@
                                 <div class="col-xl-3 col-md-6 mb-4">
                                     <div class="card h-100 card-plain border">
                                         <div class="card-body d-flex flex-column justify-content-center text-center">
-                                            <a href="">
+                                            <a href="new.php">
                                                 <i class="fa fa-plus text-secondary mb-3" aria-hidden="true"></i>
                                                 <h5 class="text-secondary"> NEW RELEASE </h5>
                                             </a>

@@ -54,7 +54,7 @@
         <div class="collapse navbar-collapse  w-auto" id="sidenav-collapse-main">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link  active" href="javascript:;">
+                    <a class="nav-link" href="./">
                         <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg width="12px" height="12px" viewBox="0 0 45 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <title>shop </title>
@@ -74,7 +74,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link  " href="./discography.php">
+                    <a class="nav-link active" href="">
                         <div class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <svg width="12px" height="12px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <title>office</title>
@@ -189,9 +189,9 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
                         <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Lunaris</a></li>
-                        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Dashboard</li>
+                        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Discography</li>
                     </ol>
-                    <h6 class="font-weight-bolder mb-0">Dashboard</h6>
+                    <h6 class="font-weight-bolder mb-0">Release update/create form</h6>
                 </nav>
                 <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
                     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
@@ -299,24 +299,36 @@
             </div>
         </nav>
         <div class="card mb-4">
-				<div class="card-header">
+				<?php
+					$res = $conn->query("SELECT * FROM track WHERE userID=".$_SESSION["userwtf"].";");
+					$trackID=array();
+					$fileName=array();
+					$gID_track=array();
+					while($row=$res->fetch_assoc()){
+						$trackID[]=$row["trackID"];
+						$fileName[]=$row["fileName"];
+						$gID_track=$row["gID"];
+					}
+				?>
+                <div class="card-body"><div class="card-header">
                     <div class="row align-items-center">
                         <div class="col-8">
-                            <h6 class="mb-0"><strong>Album ID: </strong><?php echo $albumID;?></h6>
+                            <h6 class="mb-0"><strong>Album ID: </strong><?php echo "LMG_".$_SESSION["userwtf"]."_".$albumID;?></h6>
                         </div>
                         <div class="col-4 text-end">
-                            <a href="#!" class="btn btn-sm bg-gradient-primary mb-0">Save for later editing...</a>
+                            <a href="" class="btn btn-sm bg-gradient-info mb-0">Save for later editing...</a>
+                            <a href="#!" class="btn btn-sm bg-gradient-danger mb-0" data-bs-toggle="modal" data-bs-target="#submitmodal">Submit now!</a>
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
 					<div class="row">
 						<div class="col-4">
 							<div class="position-relative">
 								<div class="blur-shadow-image">
+								<center>
 									<div id="drop-zone">
-										<img id="imggg" src="" alt="">
-										<p id="dropTxt">Drop your artwork here. (1500x1500 or above)</p>
+										<img id="imggg" src="" alt="" on>
+										<center><p id="dropTxt">Drop your artwork here. (1500x1500 or above)</p></center>
 										<input type="file" id="myfile" hidden>
 										<style>
 										#drop-zone {
@@ -377,6 +389,7 @@
 										});
 										</script>
 									</div>
+								</center>
 								</div>
 							</div>
 						</div>
@@ -390,20 +403,98 @@
 							</div>
 						</div>
 					</div>
-					<form>
-						<h6 class="heading-small text-muted mb-4">User information</h6>
+					<form action="" method="POST">
+						<div class="modal fade" id="submitmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+							  <div class="modal-dialog modal-dialog-centered" role="document">
+								<div class="modal-content">
+								  <div class="modal-header">
+									<h5 class="modal-title" id="exampleModalLabel">Submit now?</h5>
+									<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+									  <span aria-hidden="true">&times;</span>
+									</button>
+								  </div>
+								  <div class="modal-body">
+									<p class="text-left">By submitting this form, you won't be able to make any changes during our checking process. Also, you can only edit this form again once it is accepted/rejected.</p>
+								  </div>
+								  <div class="modal-footer">
+									<button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+									<button type="submit" class="btn bg-gradient-primary">Save changes</button>
+								  </div>
+								</div>
+							  </div>
+							</div>
+						<br />
+						<h6 class="heading-small text-muted mb-4">Album metadata:</h6>
 						<div>
 							<div class="row">
 								<div class="col-lg-6">
 									<div class="form-group">
-										<label class="form-control-label" for="input-username">Username</label>
+										<label class="form-control-label" for="input-username">Title:</label>
 										<input type="text" id="input-username" class="form-control" placeholder="Username" value="lucky.jesse">
 									</div>
 								</div>
+							</div>
+							<br />
+							<div class="row">
 								<div class="col-lg-6">
 									<div class="form-group">
-										<label class="form-control-label" for="input-email">Email address</label>
-										<input type="email" id="input-email" class="form-control" placeholder="jesse@example.com">
+										<label class="form-control-label" for="input-username">Artist(s):</label>
+										<div id="dropdown-container">
+											<select class="form-control" name="arole-0" id="arole-0">
+												<option value="primary">Primary</option>
+												<option value="featured">Featured</option>
+												<option value="remixer">Remixer</option>
+												<option value="producer">Producer</option>
+											</select>
+											<select class="form-control" name="artist-0" id="artist-0">
+												<?php
+													for($i=0; $i<count($artist); $i++)
+														echo '<option value="'.$artistid[$i].'">'.$artist[$i].'</option>';
+												?>
+											</select>
+											<button type="button" class="btn bg-gradient-primary" id="add-dropdown">Add another artist</button>
+											<script>
+											const addDropdownButton = document.getElementById("add-dropdown");
+											const dropdownContainer = document.getElementById("dropdown-container");
+											const firstDropdown = document.getElementById("artist-0"); // Reference the first dropdown
+											const firstroleDropdown = document.getElementById("arole-0");
+											i = 1;
+											addDropdownButton.addEventListener("click", function() {
+												// Create a new dropdown element
+												const newroleDropdown = document.createElement("select");
+												newroleDropdown.id = `arole-${i}`; // Unique ID based on timestamp
+												newroleDropdown.name = newroleDropdown.id;
+												const classroleList = firstroleDropdown.classList;
+												for (const className of classroleList) {
+													newroleDropdown.classList.add(className);
+												}
+												const options = firstroleDropdown.querySelectorAll("option");
+												for (const option of options) {
+													const newOption = option.cloneNode(true); // Clone with all attributes
+													newroleDropdown.appendChild(newOption);
+													console.log("ok");
+												}
+												dropdownContainer.insertBefore(newroleDropdown, addDropdownButton);
+												//
+												const newDropdown = document.createElement("select");
+												newDropdown.id = `artist-${i}`; // Unique ID based on timestamp
+												newDropdown.name = newDropdown.id;
+												const classList = firstDropdown.classList;
+												for (const className of classList) {
+													newDropdown.classList.add(className);
+												}
+												// Clone the options from the first dropdown
+												const options = firstDropdown.querySelectorAll("option");
+												for (const option of options) {
+													const newOption = option.cloneNode(true); // Clone with all attributes
+													newDropdown.appendChild(newOption);
+												}
+												// Add the new dropdown to the container before the button
+												dropdownContainer.insertBefore(newDropdown, addDropdownButton);
+												i=i+1;
+											});
+											</script>
+										</div>
 									</div>
 								</div>
 							</div>
