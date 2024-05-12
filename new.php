@@ -14,8 +14,11 @@
 	while($row=$res->fetch_assoc()){
 		$albumID=$row["albumID"];
 	}
-	$albumID++;
-	//$res = $conn->query("INSERT INTO album (albumID,albumType,status,userID) VALUES (".$albumID.",1,0,".$_SESSION["userwtf"].");");
+	if (!isset($_GET["albumID"])){
+		$albumID++;
+		$res = $conn->query("INSERT INTO album (albumID,albumType,status,userID) VALUES (".$albumID.",1,0,".$_SESSION["userwtf"].");");
+	} else
+		$albumID=$_GET["albumID"];
 	$artist=array();
 	$artistid=array();
 	$res = $conn->query("SELECT * FROM author WHERE userID=".$_SESSION["userwtf"].";");
@@ -300,6 +303,7 @@
         </nav>
         <div class="card mb-4">
 				<?php
+					echo "<script>alert('".$albumID."');</script>";
 					$res = $conn->query("SELECT * FROM track WHERE userID=".$_SESSION["userwtf"].";");
 					$trackID=array();
 					$fileName=array();
@@ -307,7 +311,15 @@
 					while($row=$res->fetch_assoc()){
 						$trackID[]=$row["trackID"];
 						$fileName[]=$row["fileName"];
-						$gID_track=$row["gID"];
+						$gID_track[]=$row["gID"];
+					}
+					$res=$conn->query("SELECT * FROM album WHERE albumID=".strval($albumID).";");
+					$albumName="";
+					$upc="";
+					while($row=$res->fetch_assoc()){
+						$albumName=$row["albumName"];
+						$statusID=$row["status"];
+						$upc=strval($row["UPCNum"]);
 					}
 				?>
                 <div class="card-body"><div class="card-header">
@@ -327,13 +339,13 @@
 								<div class="blur-shadow-image">
 								<center>
 									<div id="drop-zone">
-										<img id="imggg" src="" alt="" on>
+										<img id="imggg" src="" alt="">
 										<center><p id="dropTxt">Drop your artwork here. (1500x1500 or above)</p></center>
-										<input type="file" id="myfile" hidden>
+										<input type="file" id="myfile" hidden onchange="changefile()">
 										<style>
 										#drop-zone {
-											max-width: 250px;
-											height: 250px;
+											max-width: 300px;
+											height: 300px;
 											border: 2px dotted blue;
 											display: flex;
 											justify-content: center;
@@ -352,7 +364,9 @@
 										const inputElement = document.querySelector('input');
 										const img = document.querySelector('#imggg');
 										let p = document.querySelector('p')
-
+										function changefile(){
+											//
+										}
 										inputElement.addEventListener('change', function (e) {
 											const clickFile = this.files[0];
 											if (clickFile) {
@@ -396,10 +410,14 @@
 						<div class="col-8 ps-0 my-auto">
 							<div class="card-body text-left">
 								<div class="p-md-0 pt-3">
-									<h5 class="font-weight-bolder mb-0">Title</h5>
-									<p class="text-uppercase text-sm font-weight-bold mb-2">UPC: --</p>
+									<h5 class="font-weight-bolder mb-0">Title: <?php echo $albumName?$albumName:"--";?></h5>
+									<p class="text-uppercase text-sm font-weight-bold mb-2">UPC: <?php echo $upc?$upc:"--";?></p>
 								</div>
-								<p class="mb-4">Status</p>
+								<p class="mb-4">Status:
+								<?php
+									if ($statusID==0)
+										echo "";
+								?></p>
 							</div>
 						</div>
 					</div>
@@ -430,7 +448,7 @@
 								<div class="col-lg-6">
 									<div class="form-group">
 										<label class="form-control-label" for="input-username">Title:</label>
-										<input type="text" id="input-username" class="form-control" placeholder="Username" value="lucky.jesse">
+										<input type="text" class="form-control" placeholder="Release title (Example: Alone, Faded, ...)" value=<?php echo '"'.($albumName?$albumName:"").'"';?>>
 									</div>
 								</div>
 							</div>
@@ -447,6 +465,7 @@
 												<option value="producer">Producer</option>
 											</select>
 											<select class="form-control" name="artist-0" id="artist-0">
+												<option>--Choose one--</option>
 												<?php
 													for($i=0; $i<count($artist); $i++)
 														echo '<option value="'.$artistid[$i].'">'.$artist[$i].'</option>';
