@@ -458,56 +458,16 @@
 							<div class="row">
 								<div class="col-lg-6">
 									<div class="form-group">
-										<?php
-											$newRel=false;//!isset($_GET["albumID"]);
-											$n=0;
-											$k=0;
-											$artist_tmp=array();
-											$arole_tmp=array();
-											if (!$newRel){
-												$res = $conn->query("SELECT * FROM album WHERE albumID=".strval($albumID).";");
-												while($row=$res->fetch_assoc()){
-													$n=count(json_decode($row["authorID"]));
-													$artist_tmp=json_decode($row["authorID"]);
-													$arole_tmp=json_decode($row["artistRole"]);
-												}
-											}
-											for ($i=0; $i<$n; $i++){
-												echo '<script>document.getElementById("add-dropdown").click();</script>';
-												for ($j=0; $j<count($artist_tmp); $j++){
-													$mergedTxtID="artist-".strval($k);
-													echo '<script>
-														var options = document.querySelector(\'div[id="'.$mergedTxtID.'"] arole \').options;
-														for (var i = 0; i < options.length; i++) {
-															if (options[i].value == "'.$arole_tmp[$j].'") {
-																options[i].selected = true;
-																break;
-															}
-														}
-													</script>';
-													echo '<script>
-														var options = document.querySelector(\'div[id="'.$mergedTxtID.'"] aname \').options;
-														for (var i = 0; i < options.length; i++) {
-															if (options[i].value == "'.$artist_tmp[$j].'") {
-																options[i].selected = true;
-																break;
-															}
-														}
-													</script>';
-													$k++;
-												}
-											}
-										?>
 										<label class="form-control-label" for="input-username">Artist(s):</label>
 										<div id="dropdown-c">
 											<div id="artist-0">
-												<select class="form-control" name="arole" id="arole">
+												<select class="form-control" name="arole">
 													<option value="1">Primary</option>
 													<option value="2">Featured</option>
 													<option value="3">Remixer</option>
 													<option value="4">Producer</option>
 												</select>
-												<select class="form-control" name="aname" id="aname">
+												<select class="form-control" name="aname">
 													<option>--Choose one--</option>
 													<?php
 														for($i=0; $i<count($artist); $i++)
@@ -531,14 +491,61 @@
 										</div>
 									</div>
 								</div>
+								<?php
+											$newRel=false;//!isset($_GET["albumID"]);
+											$n=0;
+											$k=0;
+											$artist_tmp=array();
+											$arole_tmp=array();
+											if (!$newRel){
+												$res = $conn->query("SELECT * FROM album WHERE albumID=".strval($albumID).";");
+												while($row=$res->fetch_assoc()){
+													$n=count(json_decode($row["authorID"]));
+													$artist_tmp=json_decode($row["authorID"]);
+													$arole_tmp=json_decode($row["artistRole"]);
+												}
+											}
+											for ($i=0; $i<$n; $i++){
+												echo '<script>document.getElementById("add-dropdown").click();</script>';
+												for ($j=0; $j<count($artist_tmp); $j++){
+													$mergedTxtID="artist-".strval($k);
+													$arole_str="";
+													$ar_str="";
+													for($l=0; $l<count($artist) && $arole_tmp[$j] == $artistid[$l]; $l++){
+														$arole_str=$artist[$l];
+														$ar_str=$artist[$l];
+													}
+													echo "<script>alert('".$mergedTxtID."');</script>";
+													echo '<script>
+														var options = document.querySelector(\'div[id="'.$mergedTxtID.'"] select[name="arole"] \').options;
+														for (var i = 0; i < options.length; i++) {
+															if (options[i].text == "'.$arole_str.'") {
+																options[i].selected = true;
+																break;
+															}
+														}
+													</script>';
+													echo '<script>
+														var options = document.querySelector(\'div[id="'.$mergedTxtID.'"] select[name="aname"] \').options;
+														for (var i = 0; i < options.length; i++) {
+															if (options[i].text == "'.$ar_str.'") {
+																options[i].selected = true;
+																break;
+															}
+														}
+													</script>';
+													$k++;
+												}
+											}
+										?>
 							</div>
 							<br />
 							<div class="row">
 								<div class="col-lg-6">
 									<div class="form-group">
 										<label class="form-control-label" for="input-username">Copyright holder(s):</label>
-										<input type="text" class="form-control" placeholder="Composition Copyright (actually (C) Line)">
-										<input type="text" class="form-control" placeholder="Sound Recording Copyright (actually (P) Line)">
+										<input type="text" class="form-control" placeholder="Composition Copyright (actually (C) Line). Example: {Year: 2024,2023,...} {Artist name/Label name... Normally use primary artist name}">
+										<input type="text" class="form-control" placeholder="Sound Recording Copyright (actually (P) Line). Example: {Year: 2024,2023,...} {Artist name/Label name... Normally use label name}">
 									</div>
 								</div>
 							</div>
