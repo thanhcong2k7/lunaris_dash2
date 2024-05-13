@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 13, 2024 at 01:13 PM
+-- Generation Time: May 13, 2024 at 05:41 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -38,16 +38,19 @@ CREATE TABLE `album` (
   `artID` varchar(255) DEFAULT NULL,
   `authorID` text DEFAULT NULL,
   `createdDate` date DEFAULT NULL,
-  `relDate` date DEFAULT NULL
+  `relDate` date DEFAULT NULL,
+  `artistRole` varchar(255) DEFAULT NULL,
+  `compLine` varchar(255) DEFAULT NULL,
+  `publishLine` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `album`
 --
 
-INSERT INTO `album` (`albumID`, `albumName`, `albumType`, `UPCNum`, `status`, `storeID`, `userID`, `artID`, `authorID`, `createdDate`, `relDate`) VALUES
-(0, 'Alone', 1, '5063248680217', 0, NULL, 1, 'wtf', '[1]', '2024-04-10', '2024-04-26'),
-(1, 'Summer', 1, '5063248317359', 0, NULL, 1, NULL, '[4]', '2024-04-01', '2024-04-18');
+INSERT INTO `album` (`albumID`, `albumName`, `albumType`, `UPCNum`, `status`, `storeID`, `userID`, `artID`, `authorID`, `createdDate`, `relDate`, `artistRole`, `compLine`, `publishLine`) VALUES
+(0, 'Alone', 1, '5063248680217', 0, NULL, 1, 'wtf', '[1]', '2024-04-10', '2024-04-26', '[1]', '2023 Pilras', '2023 Kamy Records'),
+(1, 'Summer', 1, '5063248317359', 0, NULL, 1, NULL, '[4]', '2024-04-01', '2024-04-18', '[1]', '2023 Zrtee', '2023 Kamy Records');
 
 -- --------------------------------------------------------
 
