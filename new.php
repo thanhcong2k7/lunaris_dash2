@@ -15,8 +15,8 @@
 		$albumID=$row["albumID"];
 	}
 	if (!isset($_GET["albumID"])){
-		$albumID++;
-		$res = $conn->query("INSERT INTO album (albumID,albumType,status,userID) VALUES (".$albumID.",1,0,".$_SESSION["userwtf"].");");
+		//$albumID++;
+		//$res = $conn->query("INSERT INTO album (albumID,albumType,status,userID) VALUES (".$albumID.",1,0,".$_SESSION["userwtf"].");");
 	} else
 		$albumID=$_GET["albumID"];
 	$artist=array();
@@ -316,10 +316,12 @@
 					$res=$conn->query("SELECT * FROM album WHERE albumID=".strval($albumID).";");
 					$albumName="";
 					$upc="";
+					$artistRole="";
 					while($row=$res->fetch_assoc()){
 						$albumName=$row["albumName"];
 						$statusID=$row["status"];
 						$upc=strval($row["UPCNum"]);
+						$artistrole=$row["artistRole"];
 					}
 				?>
                 <div class="card-body"><div class="card-header">
@@ -456,64 +458,87 @@
 							<div class="row">
 								<div class="col-lg-6">
 									<div class="form-group">
+										<?php
+											$newRel=false;//!isset($_GET["albumID"]);
+											$n=0;
+											$k=0;
+											$artist_tmp=array();
+											$arole_tmp=array();
+											if (!$newRel){
+												$res = $conn->query("SELECT * FROM album WHERE albumID=".strval($albumID).";");
+												while($row=$res->fetch_assoc()){
+													$n=count(json_decode($row["authorID"]));
+													$artist_tmp=json_decode($row["authorID"]);
+													$arole_tmp=json_decode($row["artistRole"]);
+												}
+											}
+											for ($i=0; $i<$n; $i++){
+												echo '<script>document.getElementById("add-dropdown").click();</script>';
+												for ($j=0; $j<count($artist_tmp); $j++){
+													$mergedTxtID="artist-".strval($k);
+													echo '<script>
+														var options = document.querySelector(\'div[id="'.$mergedTxtID.'"] arole \').options;
+														for (var i = 0; i < options.length; i++) {
+															if (options[i].value == "'.$arole_tmp[$j].'") {
+																options[i].selected = true;
+																break;
+															}
+														}
+													</script>';
+													echo '<script>
+														var options = document.querySelector(\'div[id="'.$mergedTxtID.'"] aname \').options;
+														for (var i = 0; i < options.length; i++) {
+															if (options[i].value == "'.$artist_tmp[$j].'") {
+																options[i].selected = true;
+																break;
+															}
+														}
+													</script>';
+													$k++;
+												}
+											}
+										?>
 										<label class="form-control-label" for="input-username">Artist(s):</label>
-										<div id="dropdown-container">
-											<select class="form-control" name="arole-0" id="arole-0">
-												<option value="primary">Primary</option>
-												<option value="featured">Featured</option>
-												<option value="remixer">Remixer</option>
-												<option value="producer">Producer</option>
-											</select>
-											<select class="form-control" name="artist-0" id="artist-0">
-												<option>--Choose one--</option>
-												<?php
-													for($i=0; $i<count($artist); $i++)
-														echo '<option value="'.$artistid[$i].'">'.$artist[$i].'</option>';
-												?>
-											</select>
+										<div id="dropdown-c">
+											<div id="artist-0">
+												<select class="form-control" name="arole" id="arole">
+													<option value="1">Primary</option>
+													<option value="2">Featured</option>
+													<option value="3">Remixer</option>
+													<option value="4">Producer</option>
+												</select>
+												<select class="form-control" name="aname" id="aname">
+													<option>--Choose one--</option>
+													<?php
+														for($i=0; $i<count($artist); $i++)
+															echo '<option value="'.$artistid[$i].'">'.$artist[$i].'</option>';
+													?>
+												</select>
+												<br />
+											</div>
 											<button type="button" class="btn bg-gradient-primary" id="add-dropdown">Add another artist</button>
 											<script>
+											j = 1;
 											const addDropdownButton = document.getElementById("add-dropdown");
-											const dropdownContainer = document.getElementById("dropdown-container");
-											const firstDropdown = document.getElementById("artist-0"); // Reference the first dropdown
-											const firstroleDropdown = document.getElementById("arole-0");
-											i = 1;
 											addDropdownButton.addEventListener("click", function() {
-												// Create a new dropdown element
-												const newroleDropdown = document.createElement("select");
-												newroleDropdown.id = `arole-${i}`; // Unique ID based on timestamp
-												newroleDropdown.name = newroleDropdown.id;
-												const classroleList = firstroleDropdown.classList;
-												for (const className of classroleList) {
-													newroleDropdown.classList.add(className);
-												}
-												const options = firstroleDropdown.querySelectorAll("option");
-												for (const option of options) {
-													const newOption = option.cloneNode(true); // Clone with all attributes
-													newroleDropdown.appendChild(newOption);
-													console.log("ok");
-												}
-												dropdownContainer.insertBefore(newroleDropdown, addDropdownButton);
-												//
-												const newDropdown = document.createElement("select");
-												newDropdown.id = `artist-${i}`; // Unique ID based on timestamp
-												newDropdown.name = newDropdown.id;
-												const classList = firstDropdown.classList;
-												for (const className of classList) {
-													newDropdown.classList.add(className);
-												}
-												// Clone the options from the first dropdown
-												const options = firstDropdown.querySelectorAll("option");
-												for (const option of options) {
-													const newOption = option.cloneNode(true); // Clone with all attributes
-													newDropdown.appendChild(newOption);
-												}
-												// Add the new dropdown to the container before the button
-												dropdownContainer.insertBefore(newDropdown, addDropdownButton);
-												i=i+1;
+												var elem = document.querySelector(`#artist-${j-1}`);
+												var clone = elem.cloneNode(true);
+												clone.id=`artist-${j}`;
+												elem.after(clone);
+												j=j+1;
 											});
 											</script>
 										</div>
+									</div>
+								</div>
+							</div>
+							<br />
+							<div class="row">
+								<div class="col-lg-6">
+									<div class="form-group">
+										<label class="form-control-label" for="input-username">Copyright holder(s):</label>
+										<input type="text" class="form-control" placeholder="Composition Copyright (actually (C) Line)">
+										<input type="text" class="form-control" placeholder="Sound Recording Copyright (actually (P) Line)">
 									</div>
 								</div>
 							</div>
