@@ -303,7 +303,6 @@
         </nav>
         <div class="card mb-4">
 				<?php
-					echo "<script>alert('".$albumID."');</script>";
 					$res = $conn->query("SELECT * FROM track WHERE userID=".$_SESSION["userwtf"].";");
 					$trackID=array();
 					$fileName=array();
@@ -492,52 +491,54 @@
 									</div>
 								</div>
 								<?php
-											$newRel=false;//!isset($_GET["albumID"]);
-											$n=0;
-											$k=0;
-											$artist_tmp=array();
-											$arole_tmp=array();
-											if (!$newRel){
-												$res = $conn->query("SELECT * FROM album WHERE albumID=".strval($albumID).";");
-												while($row=$res->fetch_assoc()){
-													$n=count(json_decode($row["authorID"]));
-													$artist_tmp=json_decode($row["authorID"]);
-													$arole_tmp=json_decode($row["artistRole"]);
-												}
+									$newRel=false;//!isset($_GET["albumID"]);
+									$n=0;
+									$k=0;
+									$artist_tmp=array();
+									$arole_tmp=array();
+									if (!$newRel){
+										$res = $conn->query("SELECT * FROM album WHERE albumID=".strval($albumID).";");
+										while($row=$res->fetch_assoc()){
+											$n=count(json_decode($row["authorID"]));
+											$artist_tmp=json_decode($row["authorID"]);
+											$arole_tmp=json_decode($row["artistRole"]);
+										}
+									}
+									for ($i=0; $i<$n; $i++){
+										echo '<script>document.getElementById("add-dropdown").click();</script>';
+										for ($j=0; $j<count($artist_tmp); $j++){
+											$mergedTxtID="artist-".strval($k);
+											$arole_str="";
+											$ar_str="";
+											for($l=0; $l<count($artist); $l++){
+												if($artist_tmp == $artistid[$l])
+												$arole_str=$artist[$l];
+												$ar_str=$artist[$l];
 											}
-											for ($i=0; $i<$n; $i++){
-												echo '<script>document.getElementById("add-dropdown").click();</script>';
-												for ($j=0; $j<count($artist_tmp); $j++){
-													$mergedTxtID="artist-".strval($k);
-													$arole_str="";
-													$ar_str="";
-													for($l=0; $l<count($artist) && $arole_tmp[$j] == $artistid[$l]; $l++){
-														$arole_str=$artist[$l];
-														$ar_str=$artist[$l];
+											//
+											echo "<script>alert('".$l."');</script>";
+											echo '<script>
+												var options = document.querySelector(\'div[id="'.$mergedTxtID.'"] select[name="arole"] \').options;
+												for (var i = 0; i < options.length; i++) {
+													if (options[i].text == "'.$arole_str.'") {
+														options[i].selected = true;
+														break;
 													}
-													echo "<script>alert('".$mergedTxtID."');</script>";
-													echo '<script>
-														var options = document.querySelector(\'div[id="'.$mergedTxtID.'"] select[name="arole"] \').options;
-														for (var i = 0; i < options.length; i++) {
-															if (options[i].text == "'.$arole_str.'") {
-																options[i].selected = true;
-																break;
-															}
-														}
-													</script>';
-													echo '<script>
-														var options = document.querySelector(\'div[id="'.$mergedTxtID.'"] select[name="aname"] \').options;
-														for (var i = 0; i < options.length; i++) {
-															if (options[i].text == "'.$ar_str.'") {
-																options[i].selected = true;
-																break;
-															}
-														}
-													</script>';
-													$k++;
 												}
-											}
-										?>
+											</script>';
+											echo '<script>
+												var options = document.querySelector(\'div[id="'.$mergedTxtID.'"] select[name="aname"] \').options;
+												for (var i = 0; i < options.length; i++) {
+													if (options[i].text == "'.$ar_str.'") {
+														options[i].selected = true;
+														break;
+													}
+												}
+												</script>';
+											$k++;
+										}
+									}
+								?>
 							</div>
 							<br />
 							<div class="row">

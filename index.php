@@ -469,7 +469,7 @@
 													ISRC: <br />
 													Release Date: '.$reldate[$i].'</p>
 												<div class="d-flex align-items-center justify-content-between">
-													<button type="button" class="btn btn-outline-primary btn-sm mb-0 w-100">View/edit Release</button>
+													<a href="new.php?albumID='.$albumID[$i].'"><button type="button" class="btn btn-outline-primary btn-sm mb-0 w-100">View/edit Release</button></a>
 												</div>
 											</div>
 										</div>
