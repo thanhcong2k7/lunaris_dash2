@@ -57,7 +57,7 @@
         <div class="collapse navbar-collapse  w-auto" id="sidenav-collapse-main">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="./">
+                    <a class="nav-link" href=".">
                         <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg width="12px" height="12px" viewBox="0 0 45 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <title>shop </title>
@@ -77,7 +77,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="">
+                    <a class="nav-link active" href="./discography.php">
                         <div class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <svg width="12px" height="12px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <title>office</title>
@@ -323,17 +323,18 @@
 						$artistrole=$row["artistRole"];
 					}
 				?>
-                <div class="card-body"><div class="card-header">
-                    <div class="row align-items-center">
-                        <div class="col-8">
-                            <h6 class="mb-0"><strong>Album ID: </strong><?php echo "LMG_".$_SESSION["userwtf"]."_".$albumID;?></h6>
-                        </div>
-                        <div class="col-4 text-end">
-                            <a href="" class="btn btn-sm bg-gradient-info mb-0">Save for later editing...</a>
-                            <a href="#!" class="btn btn-sm bg-gradient-danger mb-0" data-bs-toggle="modal" data-bs-target="#submitmodal">Submit now!</a>
-                        </div>
-                    </div>
-                </div>
+                <div class="card-body">
+					<div class="card-header">
+						<div class="row align-items-center">
+							<div class="col-8">
+								<h6 class="mb-0"><strong>Album ID: </strong><?php echo "LMG_".$_SESSION["userwtf"]."_".$albumID;?></h6>
+							</div>
+							<div class="col-4 text-end">
+								<a href="#!" class="btn btn-sm bg-gradient-danger mb-0" data-bs-toggle="modal" data-bs-target="#submitmodal">Save/submit!</a>
+							</div>
+						</div>
+					</div>
+					<form action="./relproc.php" method="POST">
 					<div class="row">
 						<div class="col-4">
 							<div class="position-relative">
@@ -422,9 +423,8 @@
 							</div>
 						</div>
 					</div>
-					<form action="" method="POST">
 						<div class="modal fade" id="submitmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-							  <div class="modal-dialog modal-dialog-centered" role="document">
+							<div class="modal-dialog modal-dialog-centered" role="document">
 								<div class="modal-content">
 								  <div class="modal-header">
 									<h5 class="modal-title" id="exampleModalLabel">Submit now?</h5>
@@ -436,12 +436,13 @@
 									<p class="text-left">By submitting this form, you won't be able to make any changes during our checking process. Also, you can only edit this form again once it is accepted/rejected.</p>
 								  </div>
 								  <div class="modal-footer">
-									<button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
-									<button type="submit" class="btn bg-gradient-primary">Save changes</button>
+									<button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Cancel</button>
+									<button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Save changes only</button>
+									<button type="submit" class="btn bg-gradient-danger" value="submit">Submit now</button>
 								  </div>
 								</div>
-							  </div>
 							</div>
+						</div>
 						<br />
 						<h6 class="heading-small text-muted mb-4">Album metadata:</h6>
 						<div>
@@ -453,7 +454,7 @@
 									</div>
 								</div>
 							</div>
-							<br />
+							<div class="w-100"></div>
 							<div class="row">
 								<div class="col-lg-6">
 									<div class="form-group">
@@ -511,12 +512,13 @@
 											$arole_str="";
 											$ar_str="";
 											for($l=0; $l<count($artist); $l++){
-												if($artist_tmp == $artistid[$l])
-												$arole_str=$artist[$l];
-												$ar_str=$artist[$l];
+												if($artist_tmp[$i] == $artistid[$l]){
+													$arole_str=$artist[$l];
+													$ar_str=$artist[$l];
+												}
 											}
 											//
-											echo "<script>alert('".$l."');</script>";
+											//echo "<script>alert('".$ar_str."');</script>";
 											echo '<script>
 												var options = document.querySelector(\'div[id="'.$mergedTxtID.'"] select[name="arole"] \').options;
 												for (var i = 0; i < options.length; i++) {
@@ -540,12 +542,13 @@
 									}
 								?>
 							</div>
-							<br />
+							<div class="w-100"></div>
 							<div class="row">
 								<div class="col-lg-6">
 									<div class="form-group">
 										<label class="form-control-label" for="input-username">Copyright holder(s):</label>
 										<input type="text" class="form-control" placeholder="Composition Copyright (actually (C) Line). Example: {Year: 2024,2023,...} {Artist name/Label name... Normally use primary artist name}">
+										<div class="w-100"></div>
 										<input type="text" class="form-control" placeholder="Sound Recording Copyright (actually (P) Line). Example: {Year: 2024,2023,...} {Artist name/Label name... Normally use label name}">
 									</div>
 								</div>
