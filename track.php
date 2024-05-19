@@ -3,28 +3,23 @@
 	if (!isset($_SESSION["userwtf"])){
 		header("Location: ./home/");
 	}
-	$_SESSION["userwtf"]=1;
 	$conn = mysqli_connect("localhost", "root", "", "lunaris_real");
 	$res = $conn->query("SELECT * FROM user WHERE userID=".$_SESSION["userwtf"].";");
 	while($row=$res->fetch_assoc()){
 		$_SESSION["name"]=$row["name"];
 		$_SESSION["labelName"]=$row["labelName"];
+		$usertype=$row["usertype"];
 	}
 	$res = $conn->query("SELECT * FROM album WHERE userID=".$_SESSION["userwtf"].";");
-	$upc=array();
-	$albumname=array();
-	$artist_alb=array();
-	$reldate=array();
-	$albumID=array();
-	$a=0;
+	$albumID=0;
 	while($row=$res->fetch_assoc()){
-		$albumID[]=$row["albumID"];
-		$albumname[]=$row["albumName"];
-		$upc[]=$row["UPCNum"];
-		$artist_alb[]=$row["authorID"];
-		$reldate[]=$row["relDate"];
-		$a++;
+		$albumID=$row["albumID"];
 	}
+	if (!isset($_GET["albumID"])){
+		//$albumID++;
+		//$res = $conn->query("INSERT INTO album (albumID,albumType,status,userID) VALUES (".$albumID.",1,0,".$_SESSION["userwtf"].");");
+	} else
+		$albumID=$_GET["albumID"];
 	$artist=array();
 	$artistid=array();
 	$res = $conn->query("SELECT * FROM author WHERE userID=".$_SESSION["userwtf"].";");
@@ -42,9 +37,9 @@
 	<link rel="apple-touch-icon" sizes="76x76" href="./assets/img/favicon.png">
 	<link rel="icon" type="image/png" href="./assets/img/favicon.png">
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://demos.creative-tim.com/soft-ui-dashboard/assets/css/nucleo-icons.css">
-    <link rel="stylesheet" href="https://demos.creative-tim.com/soft-ui-dashboard/assets/css/nucleo-svg.css">
-    <link rel="stylesheet" href="https://demos.creative-tim.com/soft-ui-dashboard/assets/css/soft-ui-dashboard.min.css?v=1.0.2">
+    <link rel="stylesheet" href="./assets/css/nucleo-icons.css">
+    <link rel="stylesheet" href="./assets/css/nucleo-svg.css">
+    <link rel="stylesheet" href="./assets/css/soft-ui-dashboard.min.css?v=1.0.2">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
     <link rel="stylesheet" href="./assets/css/theme.css">
     <link rel="stylesheet" href="./assets/css/loopple/loopple.css">
@@ -56,11 +51,11 @@
             <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute right-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
             <a class="navbar-brand m-0" href="javascript:;">
                 <img src="https://loopple.s3.eu-west-3.amazonaws.com/images/XgAoIctIQCBqWufF09ViTDPagHqPyK4bXVjHLqfG.png" class="navbar-brand-img h-100" alt="...">
-                <span class="ms-1 font-weight-bold">[Label] <strong><?php echo $_SESSION["labelName"]; ?></strong></span>
+                <span class="ms-1 font-weight-bold">[<?php echo ($usertype==1?"Label":($usertype==2?"Artist":"Network"));?>] <strong><?php echo $_SESSION["labelName"]; ?></strong></span>
             </a>
         </div>
         <hr class="horizontal dark mt-0">
-        <div class="collapse navbar-collapse  w-auto" id="sidenav-collapse-main">
+        <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
             <ul class="navbar-nav">
                 <li class="nav-item">
                     <a class="nav-link" href=".">
@@ -83,7 +78,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="./discography.php">
+                    <a class="nav-link" href="./discography.php">
                         <div class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <svg width="12px" height="12px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <title>office</title>
@@ -94,7 +89,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link  " href="javascript:;">
+                    <a class="nav-link  " href="./artist.php">
                         <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg width="12px" height="12px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <title>settings</title>
@@ -115,7 +110,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link  " href="javascript:;">
+                    <a class="nav-link active" href="./track.php">
                         <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg width="12px" height="12px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <title>settings</title>
@@ -198,9 +193,9 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
                         <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Lunaris</a></li>
-                        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Dashboard</li>
+                        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Tracks</li>
                     </ol>
-                    <h6 class="font-weight-bolder mb-0">Discography</h6>
+                    <h6 class="font-weight-bolder mb-0">Audio Manager</h6>
                 </nav>
                 <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
                     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
@@ -213,7 +208,7 @@
                         <li class="nav-item d-flex align-items-center">
                             <a href="javascript:;" class="nav-link text-body font-weight-bold px-0">
                                 <i class="fa fa-user me-sm-1" aria-hidden="true"></i>
-                                <span class="d-sm-inline d-none">Sign In</span>
+                                <span class="d-sm-inline d-none"><?php echo $_SESSION["name"]; ?></span>
                             </a>
                         </li>
                         <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
@@ -239,7 +234,7 @@
                                     <a class="dropdown-item border-radius-md" href="javascript:;">
                                         <div class="d-flex py-1">
                                             <div class="my-auto">
-                                                <img src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/team-2.jpg" class="avatar avatar-sm  me-3 ">
+                                                <img src="./assets/img/team-2.jpg" class="avatar avatar-sm  me-3 ">
                                             </div>
                                             <div class="d-flex flex-column justify-content-center">
                                                 <h6 class="text-sm font-weight-normal mb-1">
@@ -257,7 +252,7 @@
                                     <a class="dropdown-item border-radius-md" href="javascript:;">
                                         <div class="d-flex py-1">
                                             <div class="my-auto">
-                                                <img src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm bg-gradient-dark  me-3 ">
+                                                <img src="./assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm bg-gradient-dark  me-3 ">
                                             </div>
                                             <div class="d-flex flex-column justify-content-center">
                                                 <h6 class="text-sm font-weight-normal mb-1">
@@ -307,179 +302,21 @@
                 </div>
             </div>
         </nav>
-        <div class="container-fluid pt-3">
-            <div class="row mt-4 removable">
-                <div class="col-lg">
-                    <div class="card mb-4">
-                        <div class="card-header pb-0">
-                            <div class="row">
-                                <div class="col-12">
-                                    <h6>Your releases</h6>
-                                    <p class="text-sm mb-0">
-                                        <i class="fa fa-check text-info" aria-hidden="true"></i>
-                                        <span class="font-weight-bold ms-1">All of your releases are here, including unfinished things.</span>
-                                    </p>
-                                </div>
-                                <div class="col-lg-6 col-5 my-auto text-end">
-                                    <div class="dropdown float-lg-end pe-4">
-                                        <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="fa fa-ellipsis-v text-secondary" aria-hidden="true"></i>
-                                        </a>
-                                        <ul class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5" aria-labelledby="dropdownTable">
-                                            <li><a class="dropdown-item border-radius-md" href="javascript:;">Action</a></li>
-                                            <li><a class="dropdown-item border-radius-md" href="javascript:;">Another action</a></li>
-                                            <li><a class="dropdown-item border-radius-md" href="javascript:;">Something else here</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body px-0 pb-2">
-                            <div class="table-responsive">
-                                <table class="table align-items-center mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Album name</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">UPC</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-									<?php
-										$artist_str="";
-										if (count($albumname)>3){
-											$cnt=2;
-											echo "vcl";
-										} else if (count($albumname)==0){
-											echo "";
-										} else
-										for($i=0; $i<$a; $i++){
-											//Process json string
-											$artist_str="";
-											$tmp_arr = json_decode($artist_alb[$i]);
-											foreach($tmp_arr as &$artist_tmp)
-												for($j=0; $j<count($artistid); $j++){
-													if ($artistid[$j]==$artist_tmp)
-														$artist_str .= strval($artist[$artist_tmp-1])." ";
-												}
-											$lnk="./userRes/artwork/".strval($albumID[$i]).".jpg";
-											echo'<tr>
-													<td>
-														<div class="d-flex px-2 py-1">
-															<div>
-																<img src="'.$lnk.'" class="avatar avatar-sm me-3">
-															</div>
-															<div class="d-flex flex-column justify-content-center">
-																<h6 class="mb-0 text-sm">'.$albumname[$i].'</h6>
-																<p class="text-xs text-secondary mb-0">artist</p>
-															</div>
-														</div>
-													</td>
-													<td>
-														<span class="text-xs font-weight-bold">'.$upc[$i].'</span>
-													</td>
-													<td class="align-middle text-center text-sm">
-														<span class="text-xs font-weight-bold"> $2,000 </span>
-													</td>
-													<td class="align-middle">
-														<div class="progress-wrapper w-75 mx-auto">
-															<div class="progress-info">
-																<div class="progress-percentage">
-																	<span class="text-xs font-weight-bold">40%</span>
-																</div>
-															</div>
-															<div class="progress">
-																<div class="progress-bar bg-gradient-info w-40" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="40"></div>
-															</div>
-														</div>
-													</td>
-												</tr>';
-											}
-										?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-			<div class="row">
-				<div class="col-12">
-					<div class="card mb-4">
-						<div class="card-header pb-0">
-							<h6>Authors table</h6>
-						</div>
-						<div class="card-body px-0 pt-0 pb-2">
-							<div class="table-responsive p-0">
-								<table class="table align-items-center mb-0">
-									<thead>
-										<tr>
-											<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Author</th>
-											<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Function</th>
-											<th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
-											<th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Employed</th>
-											<th class="text-secondary opacity-7"></th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>
-												<div class="d-flex px-2 py-1">
-													<div>
-														<img src="../assets/img/team-4.jpg" class="avatar avatar-sm me-3" alt="user6">
-													</div>
-													<div class="d-flex flex-column justify-content-center">
-														<h6 class="mb-0 text-sm">Miriam Eric</h6>
-														<p class="text-xs text-secondary mb-0">miriam@creative-tim.com</p>
-													</div>
-												</div>
-											</td>
-											<td>
-												<p class="text-xs font-weight-bold mb-0">Programtor</p>
-												<p class="text-xs text-secondary mb-0">Developer</p>
-											</td>
-											<td class="align-middle text-center text-sm">
-												<span class="badge badge-sm bg-gradient-secondary">Offline</span>
-											</td>
-											<td class="align-middle text-center">
-												<span class="text-secondary text-xs font-weight-bold">14/09/20</span>
-											</td>
-											<td class="align-middle">
-												<a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-												Edit
-												</a>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-        </div>
-
+        
+    </div>
         <footer class="footer pt-3 pb-4">
             <div class="container-fluid">
                 <div class="row align-items-center justify-content-lg-between">
                     <div class="col-lg-6 mb-lg-0 mb-4">
                         <div class="copyright text-center text-sm text-muted text-lg-start">
-                            © 2021,
-                            made with
-                            <a href="https://www.creative-tim.com/product/soft-ui-dashboard" class="font-weight-bold text-capitalize" target="_blank"> Soft UI Dashboard</a>
+                            Â© 2024,
+                            <a href="." class="font-weight-bold text-capitalize" target="_blank"> lunaris media group</a>
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <ul class="nav nav-footer justify-content-center justify-content-lg-end">
                             <li class="nav-item">
-                                <a href="javascript:;" class="nav-link text-muted" target="_blank">Creative Tim</a>
-                            </li>
-                            <li class="nav-item">
                                 <a href="javascript:;" class="nav-link text-muted" target="_blank">About Us</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="javascript:;" class="nav-link text-muted" target="_blank">Blog</a>
                             </li>
                             <li class="nav-item">
                                 <a href="javascript:;" class="nav-link pe-0 text-muted" target="_blank">License</a>
@@ -490,11 +327,11 @@
             </div>
         </footer>
     </div>
-    <script src="https://demos.creative-tim.com/soft-ui-dashboard/assets/js/core/popper.min.js"></script>
-    <script src="https://demos.creative-tim.com/soft-ui-dashboard/assets/js/core/bootstrap.min.js"></script>
-    <script src="https://demos.creative-tim.com/soft-ui-dashboard/assets/js/plugins/chartjs.min.js"></script>
-    <script src="https://demos.creative-tim.com/soft-ui-dashboard/assets/js/plugins/Chart.extension.js"></script>
-    <script src="https://demos.creative-tim.com/soft-ui-dashboard/assets/js/soft-ui-dashboard.min.js?v=1.0.2"></script>
+    <script src="./assets/js/core/popper.min.js"></script>
+    <script src="./assets/js/core/bootstrap.min.js"></script>
+    <script src="./assets/js/plugins/chartjs.min.js"></script>
+    <script src="./assets/js/plugins/Chart.extension.js"></script>
+    <script src="./assets/js/soft-ui-dashboard.min.js?v=1.0.2"></script>
     <script>
         if (document.querySelector("#chart-bars")) {
            	var ctx = document.getElementById("chart-bars").getContext("2d");
@@ -662,5 +499,5 @@
             }); 
            };
     </script>
-    <script src="../assets/js/loopple/loopple.js"></script>
+    <script src="./assets/js/loopple/loopple.js"></script>
 </body>
