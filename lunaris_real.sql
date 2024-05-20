@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 13, 2024 at 05:41 PM
+-- Generation Time: May 20, 2024 at 05:13 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -50,7 +50,10 @@ CREATE TABLE `album` (
 
 INSERT INTO `album` (`albumID`, `albumName`, `albumType`, `UPCNum`, `status`, `storeID`, `userID`, `artID`, `authorID`, `createdDate`, `relDate`, `artistRole`, `compLine`, `publishLine`) VALUES
 (0, 'Alone', 1, '5063248680217', 0, NULL, 1, 'wtf', '[1]', '2024-04-10', '2024-04-26', '[1]', '2023 Pilras', '2023 Kamy Records'),
-(1, 'Summer', 1, '5063248317359', 0, NULL, 1, NULL, '[4]', '2024-04-01', '2024-04-18', '[1]', '2023 Zrtee', '2023 Kamy Records');
+(1, 'Summer', 1, '5063248317359', 0, NULL, 1, NULL, '[4]', '2024-04-01', '2024-04-18', '[1]', '2023 Zrtee', '2023 Kamy Records'),
+(2, 'Let It Out', 1, '5063248317351', 0, NULL, 5, NULL, '[6]', '2024-04-01', '2024-04-18', '[1]', '2024 T52 Records', '2024 Lunaris Media Group'),
+(3, 'Let U Go', 1, '5063248317352', 0, NULL, 5, NULL, '[7]', '2024-04-01', '2024-04-18', '[1]', '2024 T52 Records', '2024 Lunaris Media Group'),
+(4, 'Let U Go', 1, '5063248317356', 0, NULL, 5, NULL, '[5]', '2024-04-01', '2024-04-18', '[1]', '2024 T52 Records', '2024 Lunaris Media Group');
 
 -- --------------------------------------------------------
 
@@ -75,28 +78,10 @@ INSERT INTO `author` (`authorID`, `authorName`, `spotifyID`, `amID`, `email`, `u
 (1, 'Pilras', '123', '123', 'pilras@kamyrecords.us.to', 1),
 (2, 'CR900', '123', '123', 'cr900@kamyrecords.us.to', 1),
 (3, 'SR341', '', '', '', 1),
-(4, 'Zrtee', '', '', '', 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `nghesi`
---
-
-CREATE TABLE `nghesi` (
-  `ID` int(11) NOT NULL,
-  `ns1` varchar(225) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `ns2` varchar(225) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `ns3` varchar(225) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `ns4` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
---
--- Dumping data for table `nghesi`
---
-
-INSERT INTO `nghesi` (`ID`, `ns1`, `ns2`, `ns3`, `ns4`) VALUES
-(1, 'Pilras', 'Vizh', 'DMH', 'CR900');
+(4, 'Zrtee', '', '', '', 1),
+(5, 'DMH', '', '', '', 5),
+(6, 'Yasuko', '', '', '', 5),
+(7, 'Zrtee', '', '', '', 5);
 
 -- --------------------------------------------------------
 
@@ -134,26 +119,6 @@ INSERT INTO `track` (`trackID`, `gID`, `fileName`, `userID`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `trangthai`
---
-
-CREATE TABLE `trangthai` (
-  `id` int(60) NOT NULL,
-  `tt1` varchar(225) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL,
-  `tt2` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL,
-  `tt3` varchar(225) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
---
--- Dumping data for table `trangthai`
---
-
-INSERT INTO `trangthai` (`id`, `tt1`, `tt2`, `tt3`) VALUES
-(1, 'distributed', 'No distribution activities', 'Pending');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `user`
 --
 
@@ -164,18 +129,21 @@ CREATE TABLE `user` (
   `username` varchar(50) NOT NULL,
   `pwd` varchar(255) NOT NULL,
   `labelName` varchar(100) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `usertype` int(11) DEFAULT NULL
+  `usertype` int(11) DEFAULT NULL,
+  `regdate` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`userID`, `name`, `email`, `username`, `pwd`, `labelName`, `usertype`) VALUES
-(1, 'Nguyen Thanh Cong', 'nhocpeacock@gmail.com', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Kamy Records', 1),
-(2, 'Hoang Tan Phat', 'tanphat@dtmedia.fun', 'tanphatlunaris', 'b977b598ae1734140cedef501cfc5cb6', 'DT Media Entertainment', 1),
-(3, 'Minh Hieu', 'mhieu2007dt@gmail.com', 'minhhieulunaris', '10219512d050a942f0b94cc5ec65a8a2', 'DAW RECORDS', 1),
-(4, 'Nguyen Nhat Minh', 'minant2903@gmail.com', 'nhatminh2903', '329bfe8466bd829c3ebd96d0a3efaf12', 'Nhat Minh', 2);
+INSERT INTO `user` (`userID`, `name`, `email`, `username`, `pwd`, `labelName`, `usertype`, `regdate`) VALUES
+(0, 'Administrator', 'nhocpeacock@gmail.com', 'kmrcs', '21232f297a57a5a743894a0e4a801fc3', 'Kamy Records', 0, '2024-05-13'),
+(1, 'Nguyen Thanh Cong', 'kmdev.4307@gmail.com', 'kmrcs2023', '21232f297a57a5a743894a0e4a801fc3', 'Kamy Records', 1, '2024-05-13'),
+(2, 'Hoang Tan Phat', 'tanphat@dtmedia.fun', 'tanphatlunaris', 'b977b598ae1734140cedef501cfc5cb6', 'DT Media Entertainment', 3, '2024-05-14'),
+(3, 'Minh Hieu', 'mhieu2007dt@gmail.com', 'minhhieulunaris', '10219512d050a942f0b94cc5ec65a8a2', 'DAW RECORDS', 1, '2024-05-01'),
+(4, 'Nguyen Nhat Minh', 'minant2903@gmail.com', 'nhatminh2903', '329bfe8466bd829c3ebd96d0a3efaf12', 'Nhat Minh', 2, '2024-05-02'),
+(5, 'Le Duc Tri', 't52music@gmail.com', 't52music', '329bfe8466bd829c3ebd96d0a3efaf12', 'T52 Records', 1, '2024-05-02');
 
 --
 -- Indexes for dumped tables
@@ -198,12 +166,6 @@ ALTER TABLE `author`
   ADD KEY `userID` (`userID`);
 
 --
--- Indexes for table `nghesi`
---
-ALTER TABLE `nghesi`
-  ADD PRIMARY KEY (`ID`);
-
---
 -- Indexes for table `stores`
 --
 ALTER TABLE `stores`
@@ -215,12 +177,6 @@ ALTER TABLE `stores`
 ALTER TABLE `track`
   ADD PRIMARY KEY (`trackID`),
   ADD KEY `userID` (`userID`);
-
---
--- Indexes for table `trangthai`
---
-ALTER TABLE `trangthai`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `user`
@@ -244,13 +200,7 @@ ALTER TABLE `album`
 -- AUTO_INCREMENT for table `author`
 --
 ALTER TABLE `author`
-  MODIFY `authorID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `nghesi`
---
-ALTER TABLE `nghesi`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `authorID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `stores`
@@ -265,16 +215,10 @@ ALTER TABLE `track`
   MODIFY `trackID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `trangthai`
---
-ALTER TABLE `trangthai`
-  MODIFY `id` int(60) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Constraints for dumped tables
