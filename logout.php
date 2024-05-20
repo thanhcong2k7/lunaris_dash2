@@ -1,4 +1,5 @@
 <?php
-	unset($_SESSION["userwtf"]);
+	session_start();
+	session_destroy();
 	header("Location: ./home/");
 ?>

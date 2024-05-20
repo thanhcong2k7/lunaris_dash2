@@ -127,7 +127,7 @@
                                 </g>
                             </svg>
                         </div>
-                        <span class="nav-link-text ms-1">Track manager</span>
+                        <span class="nav-link-text ms-1">Audio manager</span>
                     </a>
                 </li>
                 <li class="nav-item">

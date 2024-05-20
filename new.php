@@ -8,6 +8,7 @@
 	while($row=$res->fetch_assoc()){
 		$_SESSION["name"]=$row["name"];
 		$_SESSION["labelName"]=$row["labelName"];
+		$usertype=$row["usertype"];
 	}
 	$res = $conn->query("SELECT * FROM album WHERE userID=".$_SESSION["userwtf"].";");
 	$albumID=0;
@@ -50,7 +51,7 @@
             <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute right-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
             <a class="navbar-brand m-0" href="javascript:;">
                 <img src="https://loopple.s3.eu-west-3.amazonaws.com/images/XgAoIctIQCBqWufF09ViTDPagHqPyK4bXVjHLqfG.png" class="navbar-brand-img h-100" alt="...">
-                <span class="ms-1 font-weight-bold">[Label] <strong><?php echo $_SESSION["labelName"]; ?></strong></span>
+                <span class="ms-1 font-weight-bold">[<?php echo ($usertype==1?"Label":($usertype==2?"Artist":"Network"));?>] <strong><?php echo $_SESSION["labelName"]; ?></strong></span>
             </a>
         </div>
         <hr class="horizontal dark mt-0">
@@ -88,7 +89,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link  " href="javascript:;">
+                    <a class="nav-link" href="artist.php">
                         <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg width="12px" height="12px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <title>settings</title>
@@ -109,7 +110,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link  " href="javascript:;">
+                    <a class="nav-link" href="track.php">
                         <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg width="12px" height="12px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <title>settings</title>

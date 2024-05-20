@@ -1,5 +1,7 @@
 <?php
 	session_start();
-	$_SESSION["userwtf"]=1;
+	session_destroy();
+	session_start();
+	$_SESSION["userwtf"]=5;
 	header("Location: ./");
 ?>

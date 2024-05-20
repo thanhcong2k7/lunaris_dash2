@@ -3,7 +3,7 @@
 	if (!isset($_SESSION["userwtf"])){
 		header("Location: ./home/");
 	}
-	$_SESSION["userwtf"]=1;
+	//$_SESSION["userwtf"]=1;
 	$conn = mysqli_connect("localhost", "root", "", "lunaris_real");
 	$res = $conn->query("SELECT * FROM user WHERE userID=".$_SESSION["userwtf"].";");
 	while($row=$res->fetch_assoc()){
@@ -107,7 +107,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link  " href="javascript:;">
+                    <a class="nav-link" href="artist.php">
                         <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg width="12px" height="12px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <title>settings</title>
@@ -128,7 +128,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link  " href="javascript:;">
+                    <a class="nav-link" href="track.php">
                         <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg width="12px" height="12px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <title>settings</title>
@@ -145,7 +145,7 @@
                                 </g>
                             </svg>
                         </div>
-                        <span class="nav-link-text ms-1">Track manager</span>
+                        <span class="nav-link-text ms-1">Audio manager</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -377,7 +377,7 @@
 									foreach($tmp_arr as &$artist_tmp)
 										for($j=0; $j<count($artistid); $j++){
 											if ($artistid[$j]==$artist_tmp)
-												$artist_str .= strval($artist[$artist_tmp-1])." ";
+												$artist_str .= strval($artist[$artist_tmp-$artistid[0]])." ";
 										}
 									$lnk="./userRes/artwork/".strval($albumID[$i]).".jpg";
 									echo '<div class="col-xl-3 col-md-6 mb-4">

@@ -3,12 +3,13 @@
 	if (!isset($_SESSION["userwtf"])){
 		header("Location: ./home/");
 	}
-	$_SESSION["userwtf"]=1;
+	//$_SESSION["userwtf"]=1;
 	$conn = mysqli_connect("localhost", "root", "", "lunaris_real");
 	$res = $conn->query("SELECT * FROM user WHERE userID=".$_SESSION["userwtf"].";");
 	while($row=$res->fetch_assoc()){
 		$_SESSION["name"]=$row["name"];
 		$_SESSION["labelName"]=$row["labelName"];
+		$usertype=$row["usertype"];
 	}
 	$res = $conn->query("SELECT * FROM album WHERE userID=".$_SESSION["userwtf"].";");
 	$upc=array();
@@ -23,6 +24,7 @@
 		$upc[]=$row["UPCNum"];
 		$artist_alb[]=$row["authorID"];
 		$reldate[]=$row["relDate"];
+		$status[]=$row["status"];
 		$a++;
 	}
 	$artist=array();
@@ -56,7 +58,7 @@
             <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute right-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
             <a class="navbar-brand m-0" href="javascript:;">
                 <img src="https://loopple.s3.eu-west-3.amazonaws.com/images/XgAoIctIQCBqWufF09ViTDPagHqPyK4bXVjHLqfG.png" class="navbar-brand-img h-100" alt="...">
-                <span class="ms-1 font-weight-bold">[Label] <strong><?php echo $_SESSION["labelName"]; ?></strong></span>
+                <span class="ms-1 font-weight-bold">[<?php echo ($usertype==1?"Label":($usertype==2?"Artist":"Network"));?>] <strong><?php echo $_SESSION["labelName"]; ?></strong></span>
             </a>
         </div>
         <hr class="horizontal dark mt-0">
@@ -94,7 +96,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link  " href="javascript:;">
+                    <a class="nav-link" href="artist.php">
                         <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg width="12px" height="12px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <title>settings</title>
@@ -115,7 +117,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link  " href="javascript:;">
+                    <a class="nav-link" href="track.php">
                         <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg width="12px" height="12px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <title>settings</title>
@@ -132,7 +134,7 @@
                                 </g>
                             </svg>
                         </div>
-                        <span class="nav-link-text ms-1">Track manager</span>
+                        <span class="nav-link-text ms-1">Audio manager</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -225,84 +227,6 @@
                                 </div>
                             </a>
                         </li>
-                        <li class="nav-item px-3 d-flex align-items-center">
-                            <a href="javascript:;" class="nav-link text-body p-0">
-                                <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer" aria-hidden="true"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item dropdown pe-2 d-flex align-items-center">
-                            <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa fa-bell cursor-pointer" aria-hidden="true"></i>
-                            </a>
-                            <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
-                                <li class="mb-2">
-                                    <a class="dropdown-item border-radius-md" href="javascript:;">
-                                        <div class="d-flex py-1">
-                                            <div class="my-auto">
-                                                <img src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/team-2.jpg" class="avatar avatar-sm  me-3 ">
-                                            </div>
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="text-sm font-weight-normal mb-1">
-                                                    <span class="font-weight-bold">New message</span> from Laur
-                                                </h6>
-                                                <p class="text-xs text-secondary mb-0">
-                                                    <i class="fa fa-clock me-1" aria-hidden="true"></i>
-                                                    13 minutes ago
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a class="dropdown-item border-radius-md" href="javascript:;">
-                                        <div class="d-flex py-1">
-                                            <div class="my-auto">
-                                                <img src="https://demos.creative-tim.com/soft-ui-dashboard/assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm bg-gradient-dark  me-3 ">
-                                            </div>
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="text-sm font-weight-normal mb-1">
-                                                    <span class="font-weight-bold">New album</span> by Travis Scott
-                                                </h6>
-                                                <p class="text-xs text-secondary mb-0">
-                                                    <i class="fa fa-clock me-1" aria-hidden="true"></i>
-                                                    1 day
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item border-radius-md" href="javascript:;">
-                                        <div class="d-flex py-1">
-                                            <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
-                                                <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                                                    <title>credit-card</title>
-                                                    <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                                        <g id="Rounded-Icons" transform="translate(-2169.000000, -745.000000)" fill="#FFFFFF" fill-rule="nonzero">
-                                                            <g id="Icons-with-opacity" transform="translate(1716.000000, 291.000000)">
-                                                                <g id="credit-card" transform="translate(453.000000, 454.000000)">
-                                                                    <path class="color-background" d="M43,10.7482083 L43,3.58333333 C43,1.60354167 41.3964583,0 39.4166667,0 L3.58333333,0 C1.60354167,0 0,1.60354167 0,3.58333333 L0,10.7482083 L43,10.7482083 Z" id="Path" opacity="0.593633743"></path>
-                                                                    <path class="color-background" d="M0,16.125 L0,32.25 C0,34.2297917 1.60354167,35.8333333 3.58333333,35.8333333 L39.4166667,35.8333333 C41.3964583,35.8333333 43,34.2297917 43,32.25 L43,16.125 L0,16.125 Z M19.7083333,26.875 L7.16666667,26.875 L7.16666667,23.2916667 L19.7083333,23.2916667 L19.7083333,26.875 Z M35.8333333,26.875 L28.6666667,26.875 L28.6666667,23.2916667 L35.8333333,23.2916667 L35.8333333,26.875 Z" id="Shape"></path>
-                                                                </g>
-                                                            </g>
-                                                        </g>
-                                                    </g>
-                                                </svg>
-                                            </div>
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="text-sm font-weight-normal mb-1">
-                                                    Payment successfully completed
-                                                </h6>
-                                                <p class="text-xs text-secondary mb-0">
-                                                    <i class="fa fa-clock me-1" aria-hidden="true"></i>
-                                                    2 days
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
                     </ul>
                 </div>
             </div>
@@ -320,18 +244,6 @@
                                         <span class="font-weight-bold ms-1">All of your releases are here, including unfinished things.</span>
                                     </p>
                                 </div>
-                                <div class="col-lg-6 col-5 my-auto text-end">
-                                    <div class="dropdown float-lg-end pe-4">
-                                        <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="fa fa-ellipsis-v text-secondary" aria-hidden="true"></i>
-                                        </a>
-                                        <ul class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5" aria-labelledby="dropdownTable">
-                                            <li><a class="dropdown-item border-radius-md" href="javascript:;">Action</a></li>
-                                            <li><a class="dropdown-item border-radius-md" href="javascript:;">Another action</a></li>
-                                            <li><a class="dropdown-item border-radius-md" href="javascript:;">Something else here</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <div class="card-body px-0 pb-2">
@@ -339,21 +251,18 @@
                                 <table class="table align-items-center mb-0">
                                     <thead>
                                         <tr>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Album name</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">UPC</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
+											<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Album name</th>
+											<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">UPC</th>
+											<th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Release Date</th>
+											<th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+											<th class="text-secondary opacity-7"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
 									<?php
+										//echo '<script>fetch("https://script.google.com/macros/s/AKfycbyy833Mvonqz2qfXfDQXzH5r9u-45yN-nRN0LN2VfwMYEMFj0VaEsLtoxxzaSuzOdIhsA/exec").then((response) => response.json()).then((json) => console.log(json));</script>';
+										//THUMBNAIL https://drive.google.com/thumbnail?id=${id}
 										$artist_str="";
-										if (count($albumname)>3){
-											$cnt=2;
-											echo "vcl";
-										} else if (count($albumname)==0){
-											echo "";
-										} else
 										for($i=0; $i<$a; $i++){
 											//Process json string
 											$artist_str="";
@@ -361,40 +270,37 @@
 											foreach($tmp_arr as &$artist_tmp)
 												for($j=0; $j<count($artistid); $j++){
 													if ($artistid[$j]==$artist_tmp)
-														$artist_str .= strval($artist[$artist_tmp-1])." ";
+														$artist_str .= strval($artist[$artist_tmp-$artistid[0]])." ";
 												}
 											$lnk="./userRes/artwork/".strval($albumID[$i]).".jpg";
-											echo'<tr>
+											echo '<tr>
 													<td>
 														<div class="d-flex px-2 py-1">
 															<div>
-																<img src="'.$lnk.'" class="avatar avatar-sm me-3">
+																<img src="'.$lnk.'" class="avatar avatar-sm me-3" alt="user6">
 															</div>
 															<div class="d-flex flex-column justify-content-center">
 																<h6 class="mb-0 text-sm">'.$albumname[$i].'</h6>
-																<p class="text-xs text-secondary mb-0">artist</p>
+																<p class="text-xs text-secondary mb-0">'.$artist_str.'</p>
 															</div>
 														</div>
 													</td>
 													<td>
-														<span class="text-xs font-weight-bold">'.$upc[$i].'</span>
+														<p class="text-xs font-weight-bold mb-0">'.$upc[$i].'</p>
+													</td>
+													<td class="align-middle text-center">
+														<span class="text-secondary text-xs font-weight-bold">'.date("d/m/Y",DateTime::createFromFormat('Y-m-d', $reldate[$i])->getTimestamp()).'</span>
 													</td>
 													<td class="align-middle text-center text-sm">
-														<span class="text-xs font-weight-bold"> $2,000 </span>
+														<span class="badge badge-sm bg-gradient-'.($status[$i]==2?"success":($status[$i]==0||$status[$i]==1?"secondary":"danger")).'">'.($status[$i]==2?"Accepted":($status[$i]==0?"Unfinished":($status[$i]==1?"Processing":"Rejected"))).'</span>
 													</td>
 													<td class="align-middle">
-														<div class="progress-wrapper w-75 mx-auto">
-															<div class="progress-info">
-																<div class="progress-percentage">
-																	<span class="text-xs font-weight-bold">40%</span>
-																</div>
-															</div>
-															<div class="progress">
-																<div class="progress-bar bg-gradient-info w-40" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="40"></div>
-															</div>
-														</div>
+														<a href="./new.php?albumID='.$albumID[$i].'" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user" '.($status[$i]==1?"disabled":"").'>
+														Edit
+														</a>
 													</td>
-												</tr>';
+												</tr>
+												';
 											}
 										?>
                                     </tbody>
@@ -404,82 +310,20 @@
                     </div>
                 </div>
             </div>
-			<div class="row">
-				<div class="col-12">
-					<div class="card mb-4">
-						<div class="card-header pb-0">
-							<h6>Authors table</h6>
-						</div>
-						<div class="card-body px-0 pt-0 pb-2">
-							<div class="table-responsive p-0">
-								<table class="table align-items-center mb-0">
-									<thead>
-										<tr>
-											<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Author</th>
-											<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Function</th>
-											<th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
-											<th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Employed</th>
-											<th class="text-secondary opacity-7"></th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>
-												<div class="d-flex px-2 py-1">
-													<div>
-														<img src="../assets/img/team-4.jpg" class="avatar avatar-sm me-3" alt="user6">
-													</div>
-													<div class="d-flex flex-column justify-content-center">
-														<h6 class="mb-0 text-sm">Miriam Eric</h6>
-														<p class="text-xs text-secondary mb-0">miriam@creative-tim.com</p>
-													</div>
-												</div>
-											</td>
-											<td>
-												<p class="text-xs font-weight-bold mb-0">Programtor</p>
-												<p class="text-xs text-secondary mb-0">Developer</p>
-											</td>
-											<td class="align-middle text-center text-sm">
-												<span class="badge badge-sm bg-gradient-secondary">Offline</span>
-											</td>
-											<td class="align-middle text-center">
-												<span class="text-secondary text-xs font-weight-bold">14/09/20</span>
-											</td>
-											<td class="align-middle">
-												<a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-												Edit
-												</a>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
         </div>
-
         <footer class="footer pt-3 pb-4">
             <div class="container-fluid">
                 <div class="row align-items-center justify-content-lg-between">
                     <div class="col-lg-6 mb-lg-0 mb-4">
                         <div class="copyright text-center text-sm text-muted text-lg-start">
-                            © 2021,
-                            made with
-                            <a href="https://www.creative-tim.com/product/soft-ui-dashboard" class="font-weight-bold text-capitalize" target="_blank"> Soft UI Dashboard</a>
+                            © 2024,
+                            <a href="." class="font-weight-bold text-capitalize" target="_blank"> lunaris media group</a>
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <ul class="nav nav-footer justify-content-center justify-content-lg-end">
                             <li class="nav-item">
-                                <a href="javascript:;" class="nav-link text-muted" target="_blank">Creative Tim</a>
-                            </li>
-                            <li class="nav-item">
                                 <a href="javascript:;" class="nav-link text-muted" target="_blank">About Us</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="javascript:;" class="nav-link text-muted" target="_blank">Blog</a>
                             </li>
                             <li class="nav-item">
                                 <a href="javascript:;" class="nav-link pe-0 text-muted" target="_blank">License</a>
