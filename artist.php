@@ -303,7 +303,26 @@
                 </div>
             </div>
         </nav>
-        
+		<div class="container-fluid pt-3">
+			<div class="row">
+				<form action="./upload.php" method="POST">
+					<div class="col-lg-auto">
+						<div class="card card-frame">
+							<div class="card-body">
+								This is some text within a card body.
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="card card-frame">
+							<div class="card-body">
+								This is some text within a card body.
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
     </div>
         <footer class="footer pt-3 pb-4">
             <div class="container-fluid">

@@ -302,6 +302,31 @@
                 </div>
             </div>
         </nav>
+		<div class="container-fluid pt-3">
+			<form action="./upload.php" method="POST" class="row" enctype="multipart/form-data">
+				<div class="col-lg-auto">
+					<div class="card card-frame">
+						<div class="card-body">
+							<input type="file" name="fileToUpload" id="fileToUpload">
+						</div>
+					</div>
+				</div>
+				<div class="col">
+					<div class="card card-frame">
+						<div class="card-body">
+							<div class="row">
+								<div class="col">
+									hehe
+								</div>
+								<div class="col-lg-auto">
+									<input type="submit" value="Upload Image" name="submit" class="btn btn-primary">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
         
     </div>
         <footer class="footer pt-3 pb-4">
