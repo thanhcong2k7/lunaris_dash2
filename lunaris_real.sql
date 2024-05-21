@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 20, 2024 at 05:13 PM
+-- Generation Time: May 21, 2024 at 05:34 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -41,19 +41,19 @@ CREATE TABLE `album` (
   `relDate` date DEFAULT NULL,
   `artistRole` varchar(255) DEFAULT NULL,
   `compLine` varchar(255) DEFAULT NULL,
-  `publishLine` varchar(255) DEFAULT NULL
+  `publishLine` varchar(255) DEFAULT NULL,
+  `fileID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `album`
 --
 
-INSERT INTO `album` (`albumID`, `albumName`, `albumType`, `UPCNum`, `status`, `storeID`, `userID`, `artID`, `authorID`, `createdDate`, `relDate`, `artistRole`, `compLine`, `publishLine`) VALUES
-(0, 'Alone', 1, '5063248680217', 0, NULL, 1, 'wtf', '[1]', '2024-04-10', '2024-04-26', '[1]', '2023 Pilras', '2023 Kamy Records'),
-(1, 'Summer', 1, '5063248317359', 0, NULL, 1, NULL, '[4]', '2024-04-01', '2024-04-18', '[1]', '2023 Zrtee', '2023 Kamy Records'),
-(2, 'Let It Out', 1, '5063248317351', 0, NULL, 5, NULL, '[6]', '2024-04-01', '2024-04-18', '[1]', '2024 T52 Records', '2024 Lunaris Media Group'),
-(3, 'Let U Go', 1, '5063248317352', 0, NULL, 5, NULL, '[7]', '2024-04-01', '2024-04-18', '[1]', '2024 T52 Records', '2024 Lunaris Media Group'),
-(4, 'Let U Go', 1, '5063248317356', 0, NULL, 5, NULL, '[5]', '2024-04-01', '2024-04-18', '[1]', '2024 T52 Records', '2024 Lunaris Media Group');
+INSERT INTO `album` (`albumID`, `albumName`, `albumType`, `UPCNum`, `status`, `storeID`, `userID`, `artID`, `authorID`, `createdDate`, `relDate`, `artistRole`, `compLine`, `publishLine`, `fileID`) VALUES
+(0, 'Alone', 1, '5063248680217', 0, NULL, 1, 'wtf', '[1]', '2024-04-10', '2024-04-26', '[1]', '2023 Pilras', '2023 Kamy Records', NULL),
+(1, 'Summer', 1, '5063248317359', 0, NULL, 1, NULL, '[4]', '2024-04-01', '2024-04-18', '[1]', '2023 Zrtee', '2023 Kamy Records', NULL),
+(2, 'Let It Out', 1, '5063248317351', 0, NULL, 5, '1TiOkQ7O3DtyU4b24Masn9Ow0MT1GTlF6', '[6]', '2024-04-01', '2024-04-18', '[1]', '2024 T52 Records', '2024 Lunaris Media Group', 2),
+(3, 'Let U Go', 1, '5063248317356', 0, NULL, 5, '1UopK-XcsXYtndD6QihajKExqLgdykKKN', '[5]', '2024-04-01', '2024-04-18', '[1]', '2024 T52 Records', '2024 Lunaris Media Group', 1);
 
 -- --------------------------------------------------------
 
@@ -86,6 +86,27 @@ INSERT INTO `author` (`authorID`, `authorName`, `spotifyID`, `amID`, `email`, `u
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `storage`
+--
+
+CREATE TABLE `storage` (
+  `fileID` int(11) NOT NULL,
+  `gID` varchar(255) NOT NULL,
+  `userID` int(11) DEFAULT NULL,
+  `fName` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `storage`
+--
+
+INSERT INTO `storage` (`fileID`, `gID`, `userID`, `fName`) VALUES
+(1, '1E-bb_8xBZlSNUWpSZk_T2bbeSBM9suFM', 5, 'Let U Go - DMH.wav'),
+(2, '1kh_XhMrZV-jBkPhvQzdg57CSIeSYU57d', 5, 'Let It Out - Yasuko.wav');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `stores`
 --
 
@@ -94,27 +115,6 @@ CREATE TABLE `stores` (
   `storeName` varchar(50) NOT NULL,
   `isAvailable` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `track`
---
-
-CREATE TABLE `track` (
-  `trackID` int(11) NOT NULL,
-  `gID` varchar(255) NOT NULL,
-  `fileName` varchar(255) NOT NULL,
-  `userID` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `track`
---
-
-INSERT INTO `track` (`trackID`, `gID`, `fileName`, `userID`) VALUES
-(1, 'wtf', 'a.wav', 1),
-(2, 'wtf', 'b.wav', 1);
 
 -- --------------------------------------------------------
 
@@ -156,7 +156,8 @@ ALTER TABLE `album`
   ADD PRIMARY KEY (`albumID`),
   ADD UNIQUE KEY `UPCNum` (`UPCNum`),
   ADD KEY `userID` (`userID`),
-  ADD KEY `authorID` (`authorID`(768));
+  ADD KEY `authorID` (`authorID`(768)),
+  ADD KEY `fileID` (`fileID`);
 
 --
 -- Indexes for table `author`
@@ -166,17 +167,17 @@ ALTER TABLE `author`
   ADD KEY `userID` (`userID`);
 
 --
+-- Indexes for table `storage`
+--
+ALTER TABLE `storage`
+  ADD PRIMARY KEY (`fileID`),
+  ADD KEY `userID` (`userID`);
+
+--
 -- Indexes for table `stores`
 --
 ALTER TABLE `stores`
   ADD PRIMARY KEY (`storeID`);
-
---
--- Indexes for table `track`
---
-ALTER TABLE `track`
-  ADD PRIMARY KEY (`trackID`),
-  ADD KEY `userID` (`userID`);
 
 --
 -- Indexes for table `user`
@@ -203,16 +204,16 @@ ALTER TABLE `author`
   MODIFY `authorID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
+-- AUTO_INCREMENT for table `storage`
+--
+ALTER TABLE `storage`
+  MODIFY `fileID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT for table `stores`
 --
 ALTER TABLE `stores`
   MODIFY `storeID` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `track`
---
-ALTER TABLE `track`
-  MODIFY `trackID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `user`
@@ -228,7 +229,8 @@ ALTER TABLE `user`
 -- Constraints for table `album`
 --
 ALTER TABLE `album`
-  ADD CONSTRAINT `album_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`);
+  ADD CONSTRAINT `album_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`),
+  ADD CONSTRAINT `album_ibfk_2` FOREIGN KEY (`fileID`) REFERENCES `storage` (`fileID`);
 
 --
 -- Constraints for table `author`
@@ -237,10 +239,10 @@ ALTER TABLE `author`
   ADD CONSTRAINT `author_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`);
 
 --
--- Constraints for table `track`
+-- Constraints for table `storage`
 --
-ALTER TABLE `track`
-  ADD CONSTRAINT `track_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`);
+ALTER TABLE `storage`
+  ADD CONSTRAINT `storage_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

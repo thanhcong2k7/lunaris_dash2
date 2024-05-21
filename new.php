@@ -127,7 +127,7 @@
                                 </g>
                             </svg>
                         </div>
-                        <span class="nav-link-text ms-1">Track manager</span>
+                        <span class="nav-link-text ms-1">Audio manager</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -304,6 +304,7 @@
         </nav>
         <div class="card mb-4">
 				<?php
+					/*
 					$res = $conn->query("SELECT * FROM track WHERE userID=".$_SESSION["userwtf"].";");
 					$trackID=array();
 					$fileName=array();
@@ -312,7 +313,7 @@
 						$trackID[]=$row["trackID"];
 						$fileName[]=$row["fileName"];
 						$gID_track[]=$row["gID"];
-					}
+					}*/
 					$res=$conn->query("SELECT * FROM album WHERE albumID=".strval($albumID).";");
 					$albumName="";
 					$upc="";
@@ -342,9 +343,19 @@
 								<div class="blur-shadow-image">
 								<center>
 									<div id="drop-zone">
-										<img id="imggg" src="" alt="">
+										<img id="imggg" src=<?php
+											if(isset($_GET["albumID"])){
+												$res = $conn->query("SELECT artID FROM album WHERE albumID=".$_GET["albumID"].";");
+												$gID="";
+												while($row=$res->fetch_assoc()){
+													$gID=$row["artID"];
+												}
+												echo "https://lh3.googleusercontent.com/d/".$gID;
+											}
+										?> alt="">
 										<center><p id="dropTxt">Drop your artwork here. (1500x1500 or above)</p></center>
 										<input type="file" id="myfile" hidden onchange="changefile()">
+										<div id="changeornot" value="no"></div>
 										<style>
 										#drop-zone {
 											max-width: 300px;
@@ -368,7 +379,7 @@
 										const img = document.querySelector('#imggg');
 										let p = document.querySelector('p')
 										function changefile(){
-											//
+											document.getElementById("changeornot").value = "yes";
 										}
 										inputElement.addEventListener('change', function (e) {
 											const clickFile = this.files[0];
@@ -381,7 +392,8 @@
 													const result = reader.result;
 													let src = this.result;
 													img.src = src;
-													img.alt = clickFile.name
+													img.alt = clickFile.name;
+													document.getElementById("changeornot").value = "yes";
 												}
 											}
 										})

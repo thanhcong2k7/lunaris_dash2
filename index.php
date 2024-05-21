@@ -28,6 +28,7 @@
 		$albumname[]=$row["albumName"];
 		$upc[]=$row["UPCNum"];
 		$artist_alb[]=$row["authorID"];
+		$gID[]=$row["artID"];
 		//$cc=NULL;
 		/*
 		$b=0;
@@ -379,7 +380,7 @@
 											if ($artistid[$j]==$artist_tmp)
 												$artist_str .= strval($artist[$artist_tmp-$artistid[0]])." ";
 										}
-									$lnk="./userRes/artwork/".strval($albumID[$i]).".jpg";
+									$lnk="https://lh3.googleusercontent.com/d/".$gID[$i]."=s400";
 									echo '<div class="col-xl-3 col-md-6 mb-4">
 										<div class="card card-blog card-plain">
 											<div class="position-relative">

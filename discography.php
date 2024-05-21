@@ -25,6 +25,7 @@
 		$artist_alb[]=$row["authorID"];
 		$reldate[]=$row["relDate"];
 		$status[]=$row["status"];
+		$gID[]=$row["artID"];
 		$a++;
 	}
 	$artist=array();
@@ -272,12 +273,12 @@
 													if ($artistid[$j]==$artist_tmp)
 														$artist_str .= strval($artist[$artist_tmp-$artistid[0]])." ";
 												}
-											$lnk="./userRes/artwork/".strval($albumID[$i]).".jpg";
+											$lnk="https://drive.google.com/thumbnail?id=".$gID[$i];
 											echo '<tr>
 													<td>
 														<div class="d-flex px-2 py-1">
 															<div>
-																<img src="'.$lnk.'" class="avatar avatar-sm me-3" alt="user6">
+																<img src="'.$lnk.'" class="avatar avatar-sm me-3" alt="'.$albumname[$i].' Artwork">
 															</div>
 															<div class="d-flex flex-column justify-content-center">
 																<h6 class="mb-0 text-sm">'.$albumname[$i].'</h6>
