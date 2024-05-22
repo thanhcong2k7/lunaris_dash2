@@ -323,6 +323,8 @@
 						$statusID=$row["status"];
 						$upc=strval($row["UPCNum"]);
 						$artistrole=$row["artistRole"];
+						$cline=$row["compLine"];
+						$pline=$row["publishLine"];
 					}
 				?>
                 <div class="card-body">
@@ -354,8 +356,11 @@
 											}
 										?> alt="">
 										<center><p id="dropTxt">Drop your artwork here. (1500x1500 or above)</p></center>
-										<input type="file" id="myfile" hidden onchange="changefile()">
 										<div id="changeornot" value="no"></div>
+										<?php
+											if(isset($_GET["albumID"]))
+												echo "<script>const img = document.querySelector('#imggg');let p = document.querySelector('#dropTxt');img.style = 'display:block;';p.style = 'display: none';</script>";
+										?>
 										<style>
 										#drop-zone {
 											max-width: 300px;
@@ -373,50 +378,6 @@
 											display: none;
 										}
 										</style>
-										<script>
-										const dropZone = document.querySelector('#drop-zone');
-										const inputElement = document.querySelector('input');
-										const img = document.querySelector('#imggg');
-										let p = document.querySelector('p')
-										function changefile(){
-											document.getElementById("changeornot").value = "yes";
-										}
-										inputElement.addEventListener('change', function (e) {
-											const clickFile = this.files[0];
-											if (clickFile) {
-												img.style = "display:block;";
-												p.style = 'display: none';
-												const reader = new FileReader();
-												reader.readAsDataURL(clickFile);
-												reader.onloadend = function () {
-													const result = reader.result;
-													let src = this.result;
-													img.src = src;
-													img.alt = clickFile.name;
-													document.getElementById("changeornot").value = "yes";
-												}
-											}
-										})
-										dropZone.addEventListener('click', () => inputElement.click());
-										dropZone.addEventListener('dragover', (e) => {
-											e.preventDefault();
-										});
-										dropZone.addEventListener('drop', (e) => {
-											e.preventDefault();
-											img.style = "display:block;";
-											let file = e.dataTransfer.files[0];
-											document.getElementById("dropTxt").style.display="none";
-											const reader = new FileReader();
-											reader.readAsDataURL(file);
-											reader.onloadend = function () {
-												e.preventDefault()
-												p.style = 'display: none';
-												let src = this.result;
-												img.src = src;
-												img.alt = file.name
-											}
-										});
-										</script>
 									</div>
 								</center>
 								</div>
@@ -433,6 +394,23 @@
 									if ($statusID==0)
 										echo "";
 								?></p>
+								<script src="//code.jquery.com/jquery.min.js"></script>
+								<script src="./assets/js/jquery.checkImageSize.js"></script>
+								<input type="file" id="imgInp" data-min-width="3000" data-min-height="3000" class="btn btn-sm bg-gradient-primary" accept="image/x-png, image/jpeg" onchange="changefile()">
+								<script>
+								imgInp.onchange = evt => {
+									const [file] = imgInp.files;
+									if (file) {
+										imggg.src = URL.createObjectURL(file);
+										changeornot.setAttribute("value","yes");
+										const myImage = new Image();
+										myImage.src = URL.createObjectURL(file);
+										console.log(myImage.width);
+										console.log(myImage.height);
+									}
+								}
+								$("input[type=file]").checkImageSize({minWidth:3000,minHeight:3000,maxWidth:10000,maxHeight:10000,showError:true,ignoreError:false});
+								</script>
 							</div>
 						</div>
 					</div>
@@ -560,9 +538,9 @@
 								<div class="col-lg-6">
 									<div class="form-group">
 										<label class="form-control-label" for="input-username">Copyright holder(s):</label>
-										<input type="text" class="form-control" placeholder="Composition Copyright (actually (C) Line). Example: {Year: 2024,2023,...} {Artist name/Label name... Normally use primary artist name}">
+										<input type="text" class="form-control" value="<?php echo $cline; ?>" placeholder="Composition Copyright (actually (C) Line). Example: {Year: 2024,2023,...} {Artist name/Label name... Normally use primary artist name}">
 										<div class="w-100"></div>
-										<input type="text" class="form-control" placeholder="Sound Recording Copyright (actually (P) Line). Example: {Year: 2024,2023,...} {Artist name/Label name... Normally use label name}">
+										<input type="text" class="form-control" value="<?php echo $pline; ?>" placeholder="Sound Recording Copyright (actually (P) Line). Example: {Year: 2024,2023,...} {Artist name/Label name... Normally use label name}">
 									</div>
 								</div>
 							</div>

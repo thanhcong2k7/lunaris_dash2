@@ -323,13 +323,67 @@
 				</form>
 			</div>
 			<div class="row">
-				<div class="col">
-					<div class="card card-frame">
-						<div class="card-body">
-							hehe
-						</div>
-					</div>
-				</div>
+                <div class="card-body px-0 pb-2">
+                    <div class="table-responsive">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+									<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Album name</th>
+									<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">UPC</th>
+									<th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Release Date</th>
+									<th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+									<th class="text-secondary opacity-7"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+							<?php
+								//echo '<script>fetch("https://script.google.com/macros/s/AKfycbyy833Mvonqz2qfXfDQXzH5r9u-45yN-nRN0LN2VfwMYEMFj0VaEsLtoxxzaSuzOdIhsA/exec").then((response) => response.json()).then((json) => console.log(json));</script>';
+								//THUMBNAIL https://drive.google.com/thumbnail?id=${id}
+								$artist_str="";
+								for($i=0; $i<$a; $i++){
+									//Process json string
+									$artist_str="";
+									$tmp_arr = json_decode($artist_alb[$i]);
+									foreach($tmp_arr as &$artist_tmp)
+										for($j=0; $j<count($artistid); $j++){
+											if ($artistid[$j]==$artist_tmp)
+												$artist_str .= strval($artist[$artist_tmp-$artistid[0]])." ";
+										}
+									$lnk="https://drive.google.com/thumbnail?id=".$gID[$i];
+									echo '<tr>
+											<td>
+												<div class="d-flex px-2 py-1">
+													<div>
+														<img src="'.$lnk.'" class="avatar avatar-sm me-3" alt="'.$albumname[$i].' Artwork">
+													</div>
+													<div class="d-flex flex-column justify-content-center">
+														<h6 class="mb-0 text-sm">'.$albumname[$i].'</h6>
+														<p class="text-xs text-secondary mb-0">'.$artist_str.'</p>
+													</div>
+												</div>
+											</td>
+											<td>
+												<p class="text-xs font-weight-bold mb-0">'.$upc[$i].'</p>
+											</td>
+											<td class="align-middle text-center">
+												<span class="text-secondary text-xs font-weight-bold">'.date("d/m/Y",DateTime::createFromFormat('Y-m-d', $reldate[$i])->getTimestamp()).'</span>
+											</td>
+											<td class="align-middle text-center text-sm">
+												<span class="badge badge-sm bg-gradient-'.($status[$i]==2?"success":($status[$i]==0||$status[$i]==1?"secondary":"danger")).'">'.($status[$i]==2?"Accepted":($status[$i]==0?"Unfinished":($status[$i]==1?"Processing":"Rejected"))).'</span>
+											</td>
+											<td class="align-middle">
+												<a href="./new.php?albumID='.$albumID[$i].'" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user" '.($status[$i]==1?"disabled":"").'>
+												Edit
+												</a>
+											</td>
+										</tr>
+										';
+									}
+								?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 			</div>
 		</div>
     </div>
